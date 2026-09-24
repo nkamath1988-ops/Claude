@@ -1,7 +1,16 @@
-"""Historical OHLCV data fetching from Binance's public REST API, with local CSV caching.
+"""Historical OHLCV data fetching from Coinbase Exchange's public REST API, with local
+CSV caching.
 
-No API key required (public market-data endpoints only). Binance limits each request to
-1000 candles, so multi-year history requires pagination across sequential time windows.
+No API key required (public market-data endpoints only). Binance was tried first but
+had two problems in this environment: api.binance.com returns HTTP 451 ("restricted
+location") regardless of network policy, and api.binance.us has a ~586-day gap in its
+BTCUSD/ETHUSD history (mid-2023 to early-2025, coinciding with Binance.US losing USD
+banking rails in 2023) -- a naive pct_change() across that gap produced a fake +285%
+"one-day return" that silently corrupted volatility/Sharpe. Coinbase Exchange's history
+was verified gap-free for BTC-USD/ETH-USD from 2020-01-01 onward before switching.
+
+Coinbase limits each request to 300 candles, so multi-year history requires pagination
+across sequential time windows.
 """
 from __future__ import annotations
 
@@ -11,77 +20,90 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-BINANCE_KLINES_URL = "https://api.binance.com/api/v3/klines"
+COINBASE_CANDLES_URL = "https://api.exchange.coinbase.com/products/{product}/candles"
 CACHE_DIR = Path(__file__).resolve().parent.parent.parent / "data_cache"
 
-_COLUMNS = [
-    "open_time", "open", "high", "low", "close", "volume",
-    "close_time", "quote_asset_volume", "num_trades",
-    "taker_buy_base", "taker_buy_quote", "ignore",
-]
-
-_INTERVAL_MS = {
-    "1m": 60_000, "5m": 300_000, "15m": 900_000, "1h": 3_600_000,
-    "4h": 14_400_000, "1d": 86_400_000,
-}
+_GRANULARITY_S = {"1m": 60, "5m": 300, "15m": 900, "1h": 3600, "6h": 21600, "1d": 86400}
+_MAX_CANDLES_PER_REQUEST = 300
 
 
 def _cache_path(symbol: str, interval: str) -> Path:
     return CACHE_DIR / f"{symbol}_{interval}.csv"
 
 
+def _to_product(symbol: str) -> str:
+    """'BTCUSD' -> 'BTC-USD'; pass through anything already containing a hyphen."""
+    if "-" in symbol:
+        return symbol
+    if symbol.upper().endswith("USD"):
+        return f"{symbol[:-3].upper()}-USD"
+    raise ValueError(f"cannot infer Coinbase product id from symbol {symbol!r}; pass e.g. 'BTC-USD' directly")
+
+
+def _assert_no_gaps(df: pd.DataFrame, interval: str, symbol: str) -> None:
+    expected = pd.Timedelta(seconds=_GRANULARITY_S[interval])
+    gaps = df.index.to_series().diff().dropna()
+    bad = gaps[gaps > expected]
+    if not bad.empty:
+        raise RuntimeError(
+            f"{symbol} {interval} data has {len(bad)} gap(s) larger than one bar "
+            f"(largest: {bad.max()} at {bad.idxmax()}); refusing to backtest across a "
+            f"gap since pct_change() would fabricate a single giant return there. "
+            f"Inspect data_cache/{symbol}_{interval}.csv or narrow --start/--end."
+        )
+
+
 def fetch_klines(symbol: str, interval: str, start: str, end: str | None = None,
-                  use_cache: bool = True, request_pause_s: float = 0.3) -> pd.DataFrame:
-    """Fetch OHLCV candles for `symbol` (e.g. 'BTCUSDT') at `interval` (e.g. '1d')
-    from `start` (ISO date, e.g. '2019-01-01') through `end` (default: now).
+                  use_cache: bool = True, request_pause_s: float = 0.35) -> pd.DataFrame:
+    """Fetch OHLCV candles for `symbol` (e.g. 'BTCUSD' or 'BTC-USD') at `interval`
+    (e.g. '1d') from `start` (ISO date) through `end` (default: now).
 
-    Returns a DataFrame indexed by UTC timestamp with columns:
-    open, high, low, close, volume (all float).
+    Returns a DataFrame indexed by UTC timestamp with columns open, high, low, close,
+    volume (all float), sorted ascending, with no gaps larger than one bar -- a larger
+    gap raises rather than silently letting pct_change() fabricate a huge fake return.
     """
-    if interval not in _INTERVAL_MS:
-        raise ValueError(f"unsupported interval {interval!r}; choose from {sorted(_INTERVAL_MS)}")
+    if interval not in _GRANULARITY_S:
+        raise ValueError(f"unsupported interval {interval!r}; choose from {sorted(_GRANULARITY_S)}")
 
+    product = _to_product(symbol)
     cache_file = _cache_path(symbol, interval)
     if use_cache and cache_file.exists():
         cached = pd.read_csv(cache_file, index_col=0, parse_dates=True)
-        if cached.index.min() <= pd.Timestamp(start, tz="UTC") and (
-            end is None or cached.index.max() >= pd.Timestamp(end, tz="UTC") - pd.Timedelta(_INTERVAL_MS[interval], unit="ms")
-        ):
-            return cached.loc[start:end]
+        start_ts, end_ts = pd.Timestamp(start, tz="UTC"), (pd.Timestamp(end, tz="UTC") if end else pd.Timestamp.now(tz="UTC"))
+        if cached.index.min() <= start_ts and cached.index.max() >= end_ts - pd.Timedelta(seconds=_GRANULARITY_S[interval]):
+            windowed = cached.loc[start:end]
+            _assert_no_gaps(windowed, interval, symbol)
+            return windowed
 
-    start_ms = int(pd.Timestamp(start, tz="UTC").timestamp() * 1000)
-    end_ms = int(pd.Timestamp(end, tz="UTC").timestamp() * 1000) if end else int(time.time() * 1000)
-    step_ms = _INTERVAL_MS[interval] * 1000  # 1000 candles per request
+    granularity = _GRANULARITY_S[interval]
+    cursor = pd.Timestamp(start, tz="UTC")
+    end_ts = pd.Timestamp(end, tz="UTC") if end else pd.Timestamp.now(tz="UTC")
+    step = pd.Timedelta(seconds=granularity * _MAX_CANDLES_PER_REQUEST)
 
     rows = []
-    cursor = start_ms
     session = requests.Session()
-    while cursor < end_ms:
-        window_end = min(cursor + step_ms, end_ms)
-        resp = session.get(BINANCE_KLINES_URL, params={
-            "symbol": symbol, "interval": interval,
-            "startTime": cursor, "endTime": window_end, "limit": 1000,
+    url = COINBASE_CANDLES_URL.format(product=product)
+    while cursor < end_ts:
+        window_end = min(cursor + step, end_ts)
+        resp = session.get(url, params={
+            "start": cursor.isoformat(), "end": window_end.isoformat(), "granularity": granularity,
         }, timeout=20)
         resp.raise_for_status()
-        batch = resp.json()
-        if not batch:
-            cursor = window_end
-            continue
-        rows.extend(batch)
-        last_open_time = batch[-1][0]
-        cursor = last_open_time + _INTERVAL_MS[interval]
-        if len(batch) < 1000:
-            cursor = max(cursor, window_end)
+        rows.extend(resp.json())
+        cursor = window_end
         time.sleep(request_pause_s)
 
     if not rows:
         raise RuntimeError(f"no data returned for {symbol} {interval} {start}..{end}")
 
-    df = pd.DataFrame(rows, columns=_COLUMNS)
-    df["open_time"] = pd.to_datetime(df["open_time"], unit="ms", utc=True)
-    df = df.set_index("open_time")[["open", "high", "low", "close", "volume"]].astype(float)
-    df = df[~df.index.duplicated(keep="first")].sort_index()
+    df = pd.DataFrame(rows, columns=["time", "low", "high", "open", "close", "volume"])
+    df["time"] = pd.to_datetime(df["time"], unit="s", utc=True)
+    df = df.drop_duplicates("time").set_index("time")[["open", "high", "low", "close", "volume"]].astype(float)
+    df = df.sort_index()
 
     CACHE_DIR.mkdir(exist_ok=True)
     df.to_csv(cache_file)
-    return df.loc[start:end]
+
+    windowed = df.loc[start:end]
+    _assert_no_gaps(windowed, interval, symbol)
+    return windowed

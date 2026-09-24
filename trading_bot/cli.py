@@ -19,7 +19,7 @@ _PERIODS_PER_YEAR = {"1m": 365 * 24 * 60, "5m": 365 * 24 * 12, "15m": 365 * 24 *
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--symbols", nargs="+", default=["BTCUSDT", "ETHUSDT"])
+    parser.add_argument("--symbols", nargs="+", default=["BTCUSD", "ETHUSD"])
     parser.add_argument("--interval", default="1d", choices=sorted(_PERIODS_PER_YEAR))
     parser.add_argument("--start", default="2020-01-01")
     parser.add_argument("--end", default=None)
