@@ -19,8 +19,13 @@ inferable from daily bars alone.
 
 WARNING baked into the interface, not just the docstring: `stop_loss_pct=None`
 disables the stop and leaves a losing trade's downside unbounded except by
-`max_holding_days` eventually forcing an exit at whatever the close happens to be
-that day -- a real risk if a trade opens right before a large, sustained decline.
+`max_holding_bars` eventually forcing an exit at whatever the close happens to be
+then -- a real risk if a trade opens right before a large, sustained decline.
+
+`max_holding_bars` counts BARS, not calendar time -- 90 means 90 daily bars (90
+days) when `df` is daily, but 90 five-minute bars (7.5 hours) if `df` is 5-minute.
+Callers on a non-daily timeframe must convert their intended calendar duration to a
+bar count themselves (e.g. "3 days" on 5m bars = 3 * 24 * 12 = 864).
 """
 from __future__ import annotations
 
@@ -40,7 +45,7 @@ class BracketResult:
 
 
 def run_bracket_backtest(df: pd.DataFrame, entry_signal: pd.Series, take_profit_pct: float,
-                          stop_loss_pct: float | None = 0.10, max_holding_days: int | None = 90,
+                          stop_loss_pct: float | None = 0.10, max_holding_bars: int | None = 90,
                           initial_capital: float = 10_000.0, fee_bps: float = 5.0,
                           slippage_bps: float = 10.0, periods_per_year: float = 365.0,
                           strategy_name: str = "dip_buy_bracket") -> BracketResult:
@@ -62,7 +67,7 @@ def run_bracket_backtest(df: pd.DataFrame, entry_signal: pd.Series, take_profit_
             entry_price = opens[entry_idx]
             target_price = entry_price * (1 + take_profit_pct)
             stop_price = entry_price * (1 - stop_loss_pct) if stop_loss_pct is not None else None
-            hold_deadline = min(entry_idx + max_holding_days, n - 1) if max_holding_days else n - 1
+            hold_deadline = min(entry_idx + max_holding_bars, n - 1) if max_holding_bars else n - 1
 
             exit_idx = exit_price = exit_reason = None
             j = entry_idx
@@ -76,7 +81,7 @@ def run_bracket_backtest(df: pd.DataFrame, entry_signal: pd.Series, take_profit_
                     exit_idx, exit_price, exit_reason = j, target_price, "take_profit"
                     break
                 if j >= hold_deadline:
-                    exit_idx, exit_price, exit_reason = j, closes[j], "max_holding_days"
+                    exit_idx, exit_price, exit_reason = j, closes[j], "max_holding_bars"
                     break
                 equity_vals[j] = capital * (closes[j] / entry_price)
                 position_vals[j] = 1
@@ -88,7 +93,7 @@ def run_bracket_backtest(df: pd.DataFrame, entry_signal: pd.Series, take_profit_
             trades.append({
                 "entry_date": df.index[entry_idx], "entry_price": entry_price,
                 "exit_date": df.index[exit_idx], "exit_price": exit_price,
-                "exit_reason": exit_reason, "holding_days": exit_idx - entry_idx,
+                "exit_reason": exit_reason, "holding_bars": exit_idx - entry_idx,
                 "pnl_pct": pnl_pct,
             })
 
@@ -103,9 +108,9 @@ def run_bracket_backtest(df: pd.DataFrame, entry_signal: pd.Series, take_profit_
     position = pd.Series(position_vals, index=df.index)
     net_return = equity.pct_change().fillna(0)
     trades_df = pd.DataFrame(trades, columns=[
-        "entry_date", "entry_price", "exit_date", "exit_price", "exit_reason", "holding_days", "pnl_pct",
+        "entry_date", "entry_price", "exit_date", "exit_price", "exit_reason", "holding_bars", "pnl_pct",
     ])
     metrics = compute_metrics(equity, net_return, position, trades_df, periods_per_year)
-    metrics["avg_holding_days"] = float(trades_df["holding_days"].mean()) if len(trades_df) else float("nan")
+    metrics["avg_holding_bars"] = float(trades_df["holding_bars"].mean()) if len(trades_df) else float("nan")
 
     return BracketResult(strategy_name, equity, trades_df, metrics)

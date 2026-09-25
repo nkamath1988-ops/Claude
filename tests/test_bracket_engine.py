@@ -26,7 +26,7 @@ def test_entry_fills_at_next_bar_open_not_signal_bar_price():
     df = _df(opens, highs, lows, closes)
     signal = _flat_signal(df, true_on=4)  # signal fires on day 4
     result = run_bracket_backtest(df, signal, take_profit_pct=0.50, stop_loss_pct=None,
-                                   max_holding_days=None, fee_bps=0, slippage_bps=0)
+                                   max_holding_bars=None, fee_bps=0, slippage_bps=0)
     assert result.trades.iloc[0]["entry_price"] == pytest.approx(77.0)
     assert result.trades.iloc[0]["entry_date"] == df.index[5]
 
@@ -41,7 +41,7 @@ def test_take_profit_exits_at_target_price_when_high_touches_it():
     df = _df(opens, highs, lows, closes)
     signal = _flat_signal(df, true_on=0)
     result = run_bracket_backtest(df, signal, take_profit_pct=0.15, stop_loss_pct=0.10,
-                                   max_holding_days=None, fee_bps=0, slippage_bps=0)
+                                   max_holding_bars=None, fee_bps=0, slippage_bps=0)
     trade = result.trades.iloc[0]
     assert trade["exit_reason"] == "take_profit"
     assert trade["exit_price"] == pytest.approx(115.0)
@@ -58,7 +58,7 @@ def test_stop_loss_exits_at_stop_price_when_low_touches_it():
     df = _df(opens, highs, lows, closes)
     signal = _flat_signal(df, true_on=0)
     result = run_bracket_backtest(df, signal, take_profit_pct=0.20, stop_loss_pct=0.10,
-                                   max_holding_days=None, fee_bps=0, slippage_bps=0)
+                                   max_holding_bars=None, fee_bps=0, slippage_bps=0)
     trade = result.trades.iloc[0]
     assert trade["exit_reason"] == "stop_loss"
     assert trade["exit_price"] == pytest.approx(90.0)
@@ -76,11 +76,11 @@ def test_stop_wins_the_tiebreak_when_both_touched_same_day():
     df = _df(opens, highs, lows, closes)
     signal = _flat_signal(df, true_on=0)
     result = run_bracket_backtest(df, signal, take_profit_pct=0.15, stop_loss_pct=0.10,
-                                   max_holding_days=None, fee_bps=0, slippage_bps=0)
+                                   max_holding_bars=None, fee_bps=0, slippage_bps=0)
     assert result.trades.iloc[0]["exit_reason"] == "stop_loss"
 
 
-def test_max_holding_days_forces_exit_at_close_when_neither_touched():
+def test_max_holding_bars_forces_exit_at_close_when_neither_touched():
     n = 10
     opens = [100.0] * n
     highs = [104.0] * n  # never reaches the 15% target
@@ -89,10 +89,10 @@ def test_max_holding_days_forces_exit_at_close_when_neither_touched():
     df = _df(opens, highs, lows, closes)
     signal = _flat_signal(df, true_on=0)
     result = run_bracket_backtest(df, signal, take_profit_pct=0.15, stop_loss_pct=0.10,
-                                   max_holding_days=3, fee_bps=0, slippage_bps=0)
+                                   max_holding_bars=3, fee_bps=0, slippage_bps=0)
     trade = result.trades.iloc[0]
-    assert trade["exit_reason"] == "max_holding_days"
-    assert trade["holding_days"] == 3
+    assert trade["exit_reason"] == "max_holding_bars"
+    assert trade["holding_bars"] == 3
     assert trade["exit_price"] == pytest.approx(102.0)
 
 
@@ -106,7 +106,7 @@ def test_cost_is_charged_once_round_trip_at_exit():
     signal = _flat_signal(df, true_on=0)
     fee_bps, slip_bps = 10.0, 20.0
     result = run_bracket_backtest(df, signal, take_profit_pct=0.15, stop_loss_pct=0.10,
-                                   max_holding_days=None, initial_capital=1000,
+                                   max_holding_bars=None, initial_capital=1000,
                                    fee_bps=fee_bps, slippage_bps=slip_bps)
     cost_rate = (fee_bps + slip_bps) / 10_000.0
     trade = result.trades.iloc[0]
@@ -120,7 +120,7 @@ def test_no_lookahead_signal_after_last_two_bars_cannot_open_a_trade():
     df = _df([100.0] * n, [100.0] * n, [100.0] * n, [100.0] * n)
     signal = _flat_signal(df, true_on=n - 1)  # fires on the very last bar: no next bar to fill at
     result = run_bracket_backtest(df, signal, take_profit_pct=0.15, stop_loss_pct=0.10,
-                                   max_holding_days=None, fee_bps=0, slippage_bps=0)
+                                   max_holding_bars=None, fee_bps=0, slippage_bps=0)
     assert len(result.trades) == 0
 
 
