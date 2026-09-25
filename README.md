@@ -295,6 +295,37 @@ result is one 4-month, 22-trade, model-priced sample. It has not been walk-forwa
 validated the way the crypto strategies were, and SPX was never tested (no reason to
 expect a different data-availability outcome, but not verified).
 
+## Paper trading: ETH walk-forward SMA crossover, no orders placed
+
+The first thing built after the user asked for real order placement, per the
+sequence we agreed on instead: validate → paper-trade → only then consider
+execution, with every order requiring human approval. This module places **no
+orders**; it logs what the strategy would have done against real, current data.
+
+It exists because of the parameter-drift finding above: locking in whichever
+setting looked best on historical data (fast=20, slow=30, chosen in hindsight)
+would be exactly the look-ahead bias walk-forward validation exists to prevent.
+`trading_bot/paper_trading/engine.py` instead re-runs the *actual* validated
+process live — re-selecting parameters from a trailing 365-day window every 90
+days using `backtest/walk_forward.py`'s own selection logic (imported, not
+reimplemented), then tracking day-by-day what position that produces. State
+persists to JSON so a daily run picks up where the last one left off, and
+calling it twice on the same day is a no-op (checked directly in
+`tests/test_paper_trading.py`).
+
+```
+python -m trading_bot.paper_trading_cli --symbol ETHUSD --state-file paper_trading_state/ETHUSD_sma_crossover.json
+```
+
+Bootstrapped against real data on 2026-09-25: the live trailing-365-day
+optimization currently selects **fast=10, slow=100** (notably *not* the
+(20,30) that dominated the historical segment log — a reminder that "the mode
+so far" is not a fixed fact, it can and does change), and that parameter set is
+currently **long** ETH, entered notionally at $2,693.31. Paper equity starts at
+$10,000 and updates by one real day each time the CLI is re-run against fresh
+data — there is no forward-tested track record yet, because none exists until
+time actually passes.
+
 ## Swing-trading stock scanner: live candidates with entry/stop/target
 
 A different kind of tool from everything above: not a backtest, a **live screener**.
@@ -390,15 +421,18 @@ trading_bot/
   options/black_scholes.py       dependency-free Black-Scholes pricer
   options/synthetic_bracket.py   real-underlying / modeled-premium options bracket backtest
   scanner/entry_exit.py          ATR-based entry/stop/target from one live scan result row
+  paper_trading/engine.py        no-orders paper trading state machine, reuses walk_forward's own selection logic
   reports/summary.py            comparison table + equity curve chart
   cli.py                        crypto single-backtest entry point
   walk_forward_cli.py            crypto walk-forward entry point
   bracket_cli.py                 crypto dip-buy bracket entry point
   synthetic_options_cli.py        SPY/SPX synthetic options bracket + sensitivity sweep
   scanner_cli.py                  swing-scan entry/stop/target table from a saved scan JSON
+  paper_trading_cli.py            advance (or bootstrap) one day of paper trading against real data
 tests/                          unit tests for every module above, incl. Black-Scholes correctness
 data_cache_options/              real underlying/option data fetched during the SPY options work
   premiums/                       raw per-contract premium bars fetched (documented as unusable --
                                    kept for reference, not read by any code)
+paper_trading_state/             persisted paper-trading JSON state, updated by each CLI run
 data_cache_scanner/               saved live scan results + computed suggestion tables
 ```

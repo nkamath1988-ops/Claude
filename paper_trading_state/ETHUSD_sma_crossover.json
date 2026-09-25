@@ -1,0 +1,39 @@
+{
+  "symbol": "ETHUSD",
+  "fee_bps": 5.0,
+  "slippage_bps": 10.0,
+  "train_days": 365,
+  "test_days": 90,
+  "position": 1,
+  "current_params": {
+    "fast": 10,
+    "slow": 100
+  },
+  "last_close": 2693.31,
+  "last_date": "2026-09-25",
+  "equity": 10000.0,
+  "trade_log": [
+    {
+      "date": "2026-09-25",
+      "action": "INITIAL_ENTRY",
+      "price": 2693.31,
+      "params": {
+        "fast": 10,
+        "slow": 100
+      }
+    }
+  ],
+  "daily_log": [
+    {
+      "date": "2026-09-25",
+      "close": 2693.31,
+      "position": 1,
+      "params": {
+        "fast": 10,
+        "slow": 100
+      },
+      "equity": 10000.0,
+      "note": "bootstrap"
+    }
+  ]
+}
