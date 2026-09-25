@@ -1,19 +1,19 @@
-# BTC/ETH Strategy Backtester
+# Strategy Backtester (BTC/ETH spot, SPY/SPX options)
 
-Research-first automation for BTC/ETH: **this repo backtests trading strategies
-against historical data. It does not place any live orders.** That's a deliberate
-scope decision, not a placeholder — automating real-money trades before a strategy
-has been validated is how accounts get blown up.
+Research-first automation, now spanning two asset classes: **this repo backtests
+trading strategies against historical data. It does not place any live orders.**
+That's a deliberate scope decision, not a placeholder — automating real-money
+trades before a strategy has been validated is how accounts get blown up.
 
 ## Scope and what's deliberately NOT here
 
 - **No live execution.** There is no code here that calls a broker/exchange to place
   an order. If/when a strategy earns that step, it's a separate, explicit addition —
   not something this repo does implicitly.
-- **BTC/ETH only.** Forex and commodities were dropped from scope: no broker/data
-  connector for either asset class is available in this environment.
-- **Long-only, no leverage.** Matches what a spot crypto account can actually do;
-  the engine has no concept of shorting or margin.
+- **BTC/ETH spot, and SPY/SPX options.** Forex and commodities are still out of
+  scope: no broker/data connector for either is available in this environment.
+- **Long-only, no leverage on the crypto side; long calls/puts only on the options
+  side.** No shorting the underlying, no spreads, no margin.
 
 ## Why a backtest first
 
@@ -190,6 +190,105 @@ implicitly assumes. That correlation is what a raw win-rate/payoff calculation m
 and what actually sank the equity curve — the 2022 bear market and 2025 chop are
 exactly where the trade count and losses concentrate on the chart.
 
+## SPY/SPX options: 4h trend filter + 5m pullback entry, 10% premium target
+
+A different request entirely: trade SPY/SPX options (not the underlying), using the
+4h chart to confirm trend direction and the 5m chart to time entries on a pullback,
+targeting **10% profit on the option's premium** (not the underlying's price move).
+
+### Real historical option data turned out to be unusable here — for a specific,
+### verifiable reason, not "options are hard"
+
+`get_option_historicals` genuinely supports 5-minute and 4-hour bars for expired
+contracts (confirmed: a SPY $500 call expiring June 2025, fetched from March 2025,
+showed real, richly varying prices tracking the actual April 2025 tariff-crash
+volatility). The problem is that the *underlying* equity data
+(`get_equity_historicals`) and the *option* premium data don't have a genuine period
+in common in this environment:
+
+- **Underlying (SPY 4h/5m)**: confirmed fake — flat, often zero-volume, sometimes
+  flagged `interpolated: true` and sometimes not — for every date checked from
+  January 2025 through October 31, 2025. Real (correct volume, real price movement)
+  from **2025-11-03 onward**, with a clean, sharp cutover on that exact date.
+- **Option premiums**: confirmed real for a contract expiring June 2025. Confirmed
+  **flat/frozen for its entire lifespan** (a single repeated price for hundreds of
+  bars) for five separate contracts checked with expirations in Dec 2025, Jan 2026,
+  and three in the May-Sept 2026 range — every expiration at or after the point
+  where the underlying data becomes real.
+
+So: real signals need data from Nov 2025 on; real option prices are only confirmed
+before that. There is no known window satisfying both. (This was checked thoroughly
+— 7 separate probes from both directions — before concluding it's a real gap, not a
+bad date choice.)
+
+### The workaround: real signals, modeled option prices
+
+`trading_bot/options/synthetic_bracket.py` uses the real, gap-free SPY underlying
+price history (2025-11-03 onward) to generate entry signals and walk the actual
+price path, but prices each option leg with **Black-Scholes** instead of a measured
+premium. Every assumption this introduces is significant enough to repeat here,
+not just in the module docstring:
+
+- **Volatility is a proxy, not a measurement.** It's the trailing 20-trading-day
+  *realized* volatility of the underlying as of each trade's entry — a common rough
+  stand-in for *implied* vol, but they are genuinely different numbers, especially
+  around anticipated events.
+- **"Sticky vol"**: that volatility is held fixed for the life of each trade. Real
+  option prices are driven substantially by implied vol itself expanding and
+  crushing, independent of the underlying's move — none of that is modeled.
+- **European exercise** (exact for SPX, an approximation for SPY's American-style
+  contracts — small effect for a short-dated, not-deep-ITM option).
+- **No real bid-ask spread** (there's nothing to measure); a flat `--cost-rate`
+  assumption stands in for it, same caveat as every other cost assumption in this
+  README.
+
+Entries: the same 4h-bias + 5m-pullback-reclaim logic already built for crypto
+(`trading_bot/strategies/mtf_pullback.py`), run on real SPY data, tightened to a
+0.3%-pullback / 1-trading-day-cooldown trigger to keep the number of real contracts
+needed to a workable ~22 over a 4-month window (the initial untightened rule fired
+371 times in the same span). Contract resolution used real Robinhood option chains
+(ATM strike, ~7-14 days to expiration) — only the *premium path*, not the contract
+identity or the underlying price, is synthetic.
+
+### Result: real signal, wildly cost/stop-sensitive
+
+```
+python -m trading_bot.synthetic_options_cli \
+    --underlying-4h data_cache_options/SPY_4h.csv --underlying-5m data_cache_options/SPY_5m.csv \
+    --entries data_cache_options/SPY_call_entries.csv --targets data_cache_options/SPY_call_targets.csv
+```
+
+22 real entry signals, 10% take-profit fixed, swept across stop-loss width and a
+one-way cost assumption (charged on both legs):
+
+| cost (one-way) | stop | trades | win rate | total return |
+|---|---|---|---|---|
+| 0.0% | 15% | 22 | 59.1% | -20.0% |
+| 0.0% | 20% | 22 | 68.2% | -12.4% |
+| 0.0% | 30% | 22 | 81.8% | **+33.5%** |
+| 0.0% | 50% | 21 | 81.0% | -68.4% |
+| 0.5%/leg | 30% | 22 | 81.8% | +6.9% |
+| 1.0%/leg | 30% | 22 | 81.8% | -14.6% |
+| 3.0%/leg | 50% (original ask) | 21 | 81.0% | **-92.7%** |
+
+Full grid in `reports_out_synth_options/sensitivity_grid.csv`. The headline: **the
+entry signal alone (zero cost) is right at the breakeven edge with a tight 15% stop**
+(59.1% win rate against a 10%-gain/15%-loss payoff needs 60% to break even) **and
+shows real edge with a wider 30% stop** (81.8% win rate, +33.5%) — but that edge
+evaporates under any realistic cost assumption above ~0.5% per leg, and the specific
+combination originally asked about (50% stop, no explicit cost given, modeled here
+at a conservative 3%/leg) loses 93% of capital. The 50%/10% stop/target combination
+is a structurally bad risk/reward (a 14:1 loss-to-win ratio needing a ~93% win rate
+just to break even) *independent of whether the entries are any good* — this is the
+same lesson as `dip_buy_bracket`'s asymmetric-payoff failure, in a different guise.
+
+**Read this as**: the 4h+5m pullback timing may have real value, but nothing here
+should be treated as validating a 50%-stop/10%-target SPY options strategy — that
+specific shape loses regardless of entry quality, and even the promising 30%-stop
+result is one 4-month, 22-trade, model-priced sample. It has not been walk-forward
+validated the way the crypto strategies were, and SPX was never tested (no reason to
+expect a different data-availability outcome, but not verified).
+
 ## Usage
 
 ```
@@ -232,15 +331,21 @@ a reason to wire up live execution.
 
 ```
 trading_bot/
-  data/fetch.py            historical OHLCV fetch + local CSV cache, gap-checked
-  strategies/               one file per strategy, each documenting its failure mode
-  backtest/engine.py         single fixed-parameter backtest (no-lookahead, cost accounting)
-  backtest/walk_forward.py   rolling re-optimize-then-test-out-of-sample validation
-  backtest/bracket_engine.py  dip-buy + fixed take-profit/stop-loss/max-hold backtest
-  backtest/metrics.py        CAGR, Sharpe, max drawdown, win rate, exposure
-  reports/summary.py         comparison table + equity curve chart
-  cli.py                     single-backtest entry point
-  walk_forward_cli.py         walk-forward entry point
-  bracket_cli.py              dip-buy bracket entry point
-tests/                       unit tests for engine/strategy/metric/walk-forward/bracket correctness
+  data/fetch.py               historical crypto OHLCV fetch + local CSV cache, gap-checked
+  strategies/                  one file per strategy, each documenting its failure mode
+  backtest/engine.py            single fixed-parameter backtest (no-lookahead, cost accounting)
+  backtest/walk_forward.py      rolling re-optimize-then-test-out-of-sample validation
+  backtest/bracket_engine.py     dip-buy + fixed take-profit/stop-loss/max-hold backtest
+  backtest/metrics.py           CAGR, Sharpe, max drawdown, win rate, exposure
+  options/black_scholes.py       dependency-free Black-Scholes pricer
+  options/synthetic_bracket.py   real-underlying / modeled-premium options bracket backtest
+  reports/summary.py            comparison table + equity curve chart
+  cli.py                        crypto single-backtest entry point
+  walk_forward_cli.py            crypto walk-forward entry point
+  bracket_cli.py                 crypto dip-buy bracket entry point
+  synthetic_options_cli.py        SPY/SPX synthetic options bracket + sensitivity sweep
+tests/                          unit tests for every module above, incl. Black-Scholes correctness
+data_cache_options/              real underlying/option data fetched during the SPY options work
+  premiums/                       raw per-contract premium bars fetched (documented as unusable --
+                                   kept for reference, not read by any code)
 ```
