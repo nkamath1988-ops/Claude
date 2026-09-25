@@ -98,19 +98,65 @@ bull window, comes out roughly flat on BTC here and loses the least on ETH.
 **Conclusion: there is no single best strategy — only a best strategy per regime**,
 and this repo has no regime detector. Picking one strategy and running it live would
 mean betting the current regime looks like whichever window was used to justify the
-choice. The next honest step is walk-forward validation (pick the strategy using only
-data before date X, test on data after X, roll forward) or an explicit
-regime-conditional approach, not adopting either table above at face value.
+choice. The next honest step is walk-forward validation, not adopting either table
+above at face value.
+
+### Walk-forward validation
+
+A single fixed-parameter backtest, however many windows you try, still involves a
+human eyeballing results and picking a winner after the fact — that's look-ahead
+bias by another name. Walk-forward removes the human from parameter selection: for
+each strategy family, `trading_bot/backtest/walk_forward.py` re-picks the
+best-scoring parameters using only the trailing `--train-days` (default 365), locks
+them in, tests that fixed choice on the next `--test-days` (default 90) it has never
+seen, then rolls forward and repeats — chaining every out-of-sample segment into one
+continuous equity curve. This is close to what actually running one of these
+strategies live and periodically re-tuning it would look like.
+
+```
+python -m trading_bot.walk_forward_cli --symbols BTCUSD ETHUSD --start 2020-01-01
+```
+
+Results (same cost assumptions, buy-and-hold benchmarked over the identical
+out-of-sample span so it's apples-to-apples):
+
+|          | BTC total return | BTC Sharpe | ETH total return | ETH Sharpe |
+|---|---|---|---|---|
+| buy_and_hold (same span) | +189% | 0.61 | +265% | 0.68 |
+| sma_crossover (walk-forward) | +40% | 0.35 | **+712%** | **0.91** |
+| rsi_reversion (walk-forward)  | -52% | -0.16 | -29% | 0.06 |
+| donchian_breakout (walk-forward) | +97% | 0.49 | +333% | 0.72 |
+
+This is a genuinely different picture from either single-window result, and more
+trustworthy than both: **on BTC, buy-and-hold still wins outright** even when the
+other strategies get to re-tune every quarter. **On ETH, re-optimized SMA crossover
+clearly beats buy-and-hold**, on both return and Sharpe — the one result in this repo
+that looks like real, non-overfit edge rather than an artifact of window choice.
+RSI mean-reversion loses out-of-sample on both assets, consistent with every other
+test run in this README — three different evaluation methods now agree it's the one
+family to rule out.
+
+Two caveats before acting on the ETH/SMA result: (1) `trading_bot/*_segments.csv`
+(written next to the other outputs) shows the winning fast/slow window drifting
+across quarters rather than converging on one stable setting — consistent with a
+real but modest edge, not a sharp signal, and (2) this is still one full walk-forward
+run, not a distribution — rerunning with a different `--train-days`/`--test-days`
+split before trusting the ETH result would be the next thing to check, the same way
+the bear-market run checked the first backtest.
 
 ## Usage
 
 ```
 pip install -r requirements.txt
-python -m trading_bot.cli --symbols BTCUSDT ETHUSDT --interval 1d --start 2020-01-01
+python -m trading_bot.cli --symbols BTCUSD ETHUSD --interval 1d --start 2020-01-01
+python -m trading_bot.walk_forward_cli --symbols BTCUSD ETHUSD --start 2020-01-01
 ```
 
-Outputs to `reports_out/`: a comparison CSV of metrics per strategy, a log-scale
-equity-curve PNG, and a per-strategy trade log CSV.
+`cli.py` outputs to `reports_out/`: a comparison CSV of metrics per strategy, a
+log-scale equity-curve PNG, and a per-strategy trade log CSV. `walk_forward_cli.py`
+outputs to `reports_out_wf/`: the same comparison CSV/PNG shape, plus a
+`{symbol}_{family}_segments.csv` per strategy family showing which parameters were
+selected each quarter and their in-sample score.
 
 ## Backtest methodology and its limits
 
@@ -140,11 +186,13 @@ a reason to wire up live execution.
 
 ```
 trading_bot/
-  data/fetch.py         historical OHLCV fetch + local CSV cache
-  strategies/            one file per strategy, each documenting its failure mode
-  backtest/engine.py      core backtest loop (no-lookahead, cost accounting)
-  backtest/metrics.py     CAGR, Sharpe, max drawdown, win rate, exposure
-  reports/summary.py      comparison table + equity curve chart
-  cli.py                  entry point
-tests/                    unit tests for engine/strategy/metric correctness
+  data/fetch.py            historical OHLCV fetch + local CSV cache, gap-checked
+  strategies/               one file per strategy, each documenting its failure mode
+  backtest/engine.py         single fixed-parameter backtest (no-lookahead, cost accounting)
+  backtest/walk_forward.py   rolling re-optimize-then-test-out-of-sample validation
+  backtest/metrics.py        CAGR, Sharpe, max drawdown, win rate, exposure
+  reports/summary.py         comparison table + equity curve chart
+  cli.py                     single-backtest entry point
+  walk_forward_cli.py         walk-forward entry point
+tests/                       unit tests for engine/strategy/metric/walk-forward correctness
 ```

@@ -28,7 +28,17 @@ class BacktestResult:
     metrics: dict
 
 
-def _extract_trades(df: pd.DataFrame, position: pd.Series, cost_rate: float) -> pd.DataFrame:
+def compute_position(df: pd.DataFrame, strategy: Strategy) -> pd.Series:
+    """The position held during each bar of `df`: strategy's signal at bar t (computed
+    from data through t) only takes effect starting bar t+1. Exposed separately from
+    run_backtest so walk-forward validation can compute a strategy's signal over a full
+    historical context (so rolling/ewm indicators are already warmed up) while only
+    scoring a later sub-window -- see backtest/walk_forward.py."""
+    signal = strategy.generate_signals(df)
+    return signal.shift(1).fillna(0)
+
+
+def extract_trades(df: pd.DataFrame, position: pd.Series, cost_rate: float) -> pd.DataFrame:
     exec_price = df["close"].shift(1)
     trades = []
     entry_idx = None
@@ -68,8 +78,7 @@ def run_backtest(df: pd.DataFrame, strategy: Strategy, initial_capital: float = 
     """Run `strategy` over `df` (must have an 'close'/'high'/'low' columns, sorted
     ascending by time). fee_bps/slippage_bps are round-trip-leg costs in basis points
     of notional, charged on every position change (entry AND exit each pay it once)."""
-    signal = strategy.generate_signals(df)
-    position = signal.shift(1).fillna(0)
+    position = compute_position(df, strategy)
 
     asset_return = df["close"].pct_change().fillna(0)
     gross_return = position * asset_return
@@ -82,7 +91,7 @@ def run_backtest(df: pd.DataFrame, strategy: Strategy, initial_capital: float = 
     net_return = gross_return - cost
     equity = initial_capital * (1 + net_return).cumprod()
 
-    trades = _extract_trades(df, position, cost_rate)
+    trades = extract_trades(df, position, cost_rate)
     metrics = compute_metrics(equity, net_return, position, trades, periods_per_year)
 
     return BacktestResult(strategy.name, equity, trades, metrics)
