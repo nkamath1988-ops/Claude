@@ -144,6 +144,52 @@ run, not a distribution — rerunning with a different `--train-days`/`--test-da
 split before trusting the ETH result would be the next thing to check, the same way
 the bear-market run checked the first backtest.
 
+### Dip-buy with a fixed take-profit target
+
+A different kind of strategy from the four above: instead of holding "as long as an
+indicator says to," `trading_bot/strategies/dip_buy_bracket.py` +
+`trading_bot/backtest/bracket_engine.py` implement "buy after a pullback, sell at a
+fixed profit target" — entry triggers when price is at least `--pullback-pct` below
+its trailing `--lookback-days` high, exit is whichever of a take-profit, a stop-loss,
+or a max holding period is hit first (checked against each day's high/low, not just
+the close, since a price target is a real limit/stop order). A take-profit with no
+stop-loss has unbounded downside on any trade that doesn't recover, so a 10%
+stop-loss and a 90-day max hold are on by default even though neither was specified —
+both configurable, `--stop-loss-pct -1` disables the stop.
+
+```
+python -m trading_bot.bracket_cli --symbols BTCUSD ETHUSD --take-profit-pct 0.15 --pullback-pct 0.10 --stop-loss-pct 0.10 --max-holding-days 90
+```
+
+Result, 2020-2025, 15% target / 10% pullback trigger / 10% stop / 90-day max hold:
+
+|          | total return | Sharpe | max drawdown | trades | win rate | avg hold |
+|---|---|---|---|---|---|---|
+| BTC dip_buy | +24% | 0.29 | -74.8% | 84 | 45.2% | 15.8 days |
+| BTC buy_and_hold | +1,068% | 0.91 | -76.7% | 1 | — | — |
+| ETH dip_buy | **-40%** | 0.15 | **-91.1%** | 145 | 42.8% | 8.9 days |
+| ETH buy_and_hold | +1,966% | 0.97 | -79.4% | 1 | — | — |
+
+Loses badly on both, catastrophically on ETH — an actual loss of principal over a
+period buy-and-hold turned into a 20x. This confirms the concern raised before
+building it: the entry rule ("price dropped 10%, buy it") is the same bet as
+`rsi_reversion`, which lost in every evaluation already run in this README (bull
+backtest, bear backtest, walk-forward). A fixed take-profit on the exit side doesn't
+change that — it only decides how the *winning* trades get closed, not whether the
+entries are catching real bottoms.
+
+The more useful thing this run shows is *why* it loses, because it's not obvious from
+the win rate alone: at a 45%/43% win rate with a 15%-gain-vs-10%-loss payoff, the
+average trade has slightly *positive* expectancy on paper (≈+1.3% BTC, ≈+0.7% ETH,
+before costs) — the kind of number that looks fine in isolation. It still loses money
+because dip-buy entries aren't independent: in a sustained decline, each stop-out is
+immediately followed by a fresh entry (price is *still* freshly down 10% from its now
+also-falling recent high), so real drawdowns produce clusters of correlated,
+back-to-back losing trades rather than the independent coin-flips the expectancy math
+implicitly assumes. That correlation is what a raw win-rate/payoff calculation misses
+and what actually sank the equity curve — the 2022 bear market and 2025 chop are
+exactly where the trade count and losses concentrate on the chart.
+
 ## Usage
 
 ```
@@ -190,9 +236,11 @@ trading_bot/
   strategies/               one file per strategy, each documenting its failure mode
   backtest/engine.py         single fixed-parameter backtest (no-lookahead, cost accounting)
   backtest/walk_forward.py   rolling re-optimize-then-test-out-of-sample validation
+  backtest/bracket_engine.py  dip-buy + fixed take-profit/stop-loss/max-hold backtest
   backtest/metrics.py        CAGR, Sharpe, max drawdown, win rate, exposure
   reports/summary.py         comparison table + equity curve chart
   cli.py                     single-backtest entry point
   walk_forward_cli.py         walk-forward entry point
-tests/                       unit tests for engine/strategy/metric/walk-forward correctness
+  bracket_cli.py              dip-buy bracket entry point
+tests/                       unit tests for engine/strategy/metric/walk-forward/bracket correctness
 ```
