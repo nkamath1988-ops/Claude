@@ -77,10 +77,30 @@ closest (and edges buy-and-hold on ETH's Sharpe ratio, i.e. a smoother ride for
 slightly less return), which fits its designed tradeoff: give up some upside for a
 few large trend-catching wins funded by many small breakout failures. None of this
 should be read as "so buy-and-hold is correct" either — five years dominated by a
-strong secular crypto uptrend is a soft test for a trend-following benchmark; a
-strategy comparison run over a different window (e.g. 2021-11 through 2022-11, the
-prior bear market) could easily invert these rankings. Re-run with `--start`/`--end`
-narrowed to specific regimes before concluding anything is robust.
+strong secular crypto uptrend is a soft test for a trend-following benchmark.
+
+**That prediction was checked, and it inverted exactly as expected.** Re-running the
+same four strategies over the 2021-11-01 to 2022-11-30 bear market (`--start
+2021-11-01 --end 2022-11-30`):
+
+|          | BTC total return | BTC Sharpe | BTC max DD | ETH total return | ETH Sharpe | ETH max DD |
+|---|---|---|---|---|---|---|
+| buy_and_hold          | -71.9% | -1.45 | -76.7% | -70.1% | -0.83 | -79.4% |
+| sma_crossover_20_50   | -46.7% | -1.57 | -53.8% | -39.1% | -0.78 | -45.3% |
+| rsi_reversion_14_30_60|  +0.6% |  0.22 | -40.4% | -15.8% |  0.01 | -57.6% |
+| donchian_breakout_20  | -34.2% | -0.86 | -39.2% | -45.5% | -0.91 | -57.3% |
+
+Buy-and-hold is now the **worst** performer on both assets, by a wide margin. Every
+active strategy preserved capital better simply by having an exit rule and going
+flat during the crash — RSI mean-reversion, the strategy that lost the worst in the
+bull window, comes out roughly flat on BTC here and loses the least on ETH.
+
+**Conclusion: there is no single best strategy — only a best strategy per regime**,
+and this repo has no regime detector. Picking one strategy and running it live would
+mean betting the current regime looks like whichever window was used to justify the
+choice. The next honest step is walk-forward validation (pick the strategy using only
+data before date X, test on data after X, roll forward) or an explicit
+regime-conditional approach, not adopting either table above at face value.
 
 ## Usage
 

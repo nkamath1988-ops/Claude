@@ -1,5 +1,5 @@
 __pycache__/
 *.pyc
 data_cache/*.csv
-reports_out/
+reports_out*/
 .pytest_cache/
