@@ -1,19 +1,25 @@
-# Strategy Backtester (BTC/ETH spot, SPY/SPX options)
+# Strategy Backtester + Swing Scanner (BTC/ETH spot, SPY/SPX options, live stock screening)
 
-Research-first automation, now spanning two asset classes: **this repo backtests
-trading strategies against historical data. It does not place any live orders.**
-That's a deliberate scope decision, not a placeholder — automating real-money
-trades before a strategy has been validated is how accounts get blown up.
+Research-first automation across three things: **backtests of trading strategies
+against historical data, and a live technical screener that suggests candidates
+with entry/stop/target. Nothing here places a live order.** That's a deliberate
+scope decision, not a placeholder — automating real-money trades before a strategy
+has been validated is how accounts get blown up, and a screener's output is a
+research starting point, not a signal to act on unexamined.
 
 ## Scope and what's deliberately NOT here
 
 - **No live execution.** There is no code here that calls a broker/exchange to place
   an order. If/when a strategy earns that step, it's a separate, explicit addition —
   not something this repo does implicitly.
-- **BTC/ETH spot, and SPY/SPX options.** Forex and commodities are still out of
-  scope: no broker/data connector for either is available in this environment.
+- **BTC/ETH spot, SPY/SPX options, and a live stock scanner.** Forex and commodities
+  are still out of scope: no broker/data connector for either is available in this
+  environment.
 - **Long-only, no leverage on the crypto side; long calls/puts only on the options
   side.** No shorting the underlying, no spreads, no margin.
+- **The scanner is unvalidated by design.** Its entry/stop/target come from
+  well-understood indicators (RSI, ADX, ATR), but the *combination* has no
+  backtested track record in this repo, unlike every strategy above it.
 
 ## Why a backtest first
 
@@ -289,6 +295,50 @@ result is one 4-month, 22-trade, model-priced sample. It has not been walk-forwa
 validated the way the crypto strategies were, and SPX was never tested (no reason to
 expect a different data-availability outcome, but not verified).
 
+## Swing-trading stock scanner: live candidates with entry/stop/target
+
+A different kind of tool from everything above: not a backtest, a **live screener**.
+Robinhood's scanner API (`create_scan`/`run_scan`) can screen the entire market
+against real technical filters (RSI, ADX, moving averages, ATR, volume, market cap,
+...) in one call — no need to fetch bulk historical data for hundreds of tickers.
+
+The saved scan (`Swing pullback-in-uptrend scan`) looks for: real stocks (not
+ETFs/crypto), price > $10 and market cap > $300M (avoid penny/micro-cap noise),
+30-day average volume > 500k shares (liquidity), a positive trailing-month return
+with ADX(14) > 20 (a confirmed uptrend, not just noise), and RSI(14) between 35-50
+(cooled off from a pullback, but not in a full oversold reversal). It's the same
+trend-plus-pullback family as `mtf_pullback.py`, applied as a screen instead of a
+single-symbol signal.
+
+```
+python -m trading_bot.scanner_cli --scan-json data_cache_scanner/swing_scan_20260924.json
+```
+
+**Entry uses the daily `Close` the signal was actually computed from, not the live
+`Last` price** — every scan filter runs on completed daily bars, so using the live
+quote as "entry" would silently blend yesterday's signal with today's unrelated
+price move. A live run (2026-09-24) found 38 candidates; **19 of the 38 (half!)
+had already moved more than 1.5% between that signal close and the live quote by
+scan time** — e.g. Trane Technologies (TT) closed at $438.54 but was already
+trading at $454.44, a 3.6% move the signal never priced in. Those are flagged
+`stale` in the output, not silently included as if still actionable.
+
+Entry/stop/target come from **ATR (Average True Range)**, not the scanner's own
+Support/Resistance columns — those returned at least one real case (TT again)
+where "Resistance" sat *below* the live price, which would make a nonsensical
+profit target already behind you. Defaults: stop = entry − 1.5×ATR, target =
+entry + 3×ATR (a 2:1 reward:risk), both adjustable via `--atr-stop-mult`/
+`--atr-target-mult`.
+
+**This is a screening tool, not a validated strategy.** Unlike every crypto/SPY
+result above, "RSI 35-50 pullback in an ADX-confirmed uptrend" has not been
+backtested in this repo — there's no historical win rate, no walk-forward result,
+nothing. It's a live filter built from indicators that are individually
+well-understood, not a strategy with a track record. Treat its output as a
+starting shortlist to research further, not a signal to act on directly — and
+skip anything flagged stale outright, since its entry price no longer reflects
+where the stock actually trades.
+
 ## Usage
 
 ```
@@ -339,13 +389,16 @@ trading_bot/
   backtest/metrics.py           CAGR, Sharpe, max drawdown, win rate, exposure
   options/black_scholes.py       dependency-free Black-Scholes pricer
   options/synthetic_bracket.py   real-underlying / modeled-premium options bracket backtest
+  scanner/entry_exit.py          ATR-based entry/stop/target from one live scan result row
   reports/summary.py            comparison table + equity curve chart
   cli.py                        crypto single-backtest entry point
   walk_forward_cli.py            crypto walk-forward entry point
   bracket_cli.py                 crypto dip-buy bracket entry point
   synthetic_options_cli.py        SPY/SPX synthetic options bracket + sensitivity sweep
+  scanner_cli.py                  swing-scan entry/stop/target table from a saved scan JSON
 tests/                          unit tests for every module above, incl. Black-Scholes correctness
 data_cache_options/              real underlying/option data fetched during the SPY options work
   premiums/                       raw per-contract premium bars fetched (documented as unusable --
                                    kept for reference, not read by any code)
+data_cache_scanner/               saved live scan results + computed suggestion tables
 ```
