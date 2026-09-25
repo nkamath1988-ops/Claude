@@ -370,6 +370,42 @@ starting shortlist to research further, not a signal to act on directly — and
 skip anything flagged stale outright, since its entry price no longer reflects
 where the stock actually trades.
 
+## Paper trading: swing-scanner stocks, no orders placed
+
+The scanner above has zero backtest, so before it goes anywhere near real orders
+it needs the same treatment the ETH strategy got: paper trade it, with a
+graduation bar agreed in advance so results can't be read as "good enough" after
+the fact just because time pressure exists. That bar, fixed before any paper
+results existed: **≥20-30 completed round-trip trades, ≥2-3 months elapsed,
+positive expectancy after a 5-10bps cost assumption, and a win rate meaningfully
+above the ~33% breakeven the 2:1 reward:risk (3×ATR target / 1.5×ATR stop)
+implies.** Even clearing all of that, execution safety (sizing, loss caps, a kill
+switch, per-order approval) still wouldn't exist yet.
+
+Structurally different from the ETH paper trader: the scanner surfaces *several*
+stock candidates at once, not one continuous position, so
+`trading_bot/stock_paper_trading/engine.py` tracks a small portfolio — up to
+`max_concurrent` (default 8) positions simultaneously, each sized at a **fixed
+10% of the portfolio's original capital** (not of current equity, so position
+size doesn't grow or shrink with performance), each with its own ATR-based
+stop/target and a 20-trading-day max hold (a real swing-trading horizon, shorter
+than the crypto bracket engine's 90-day default). Refreshing the scan is a live
+`run_scan` call only an agent session can make — same constraint as the SPY
+options data-fetching work — so, like `synthetic_options_cli.py`, there's no
+self-contained CLI here; `trading_bot/scanner/entry_exit.py`'s
+`select_new_candidates` picks fresh, non-stale, not-already-held symbols from
+whatever a live scan pull returns, and a daily Routine drives the loop end to end.
+
+Bootstrapped 2026-09-25 with a fresh scan pull: 8 positions opened (all 8
+concurrent slots filled from that day's non-stale candidates) — STNG, BKSY, OHI,
+TX, TARS, NVMI, VOD, HPQ — $1,000 each, $2,000 cash held in reserve, $10,000
+total paper capital. A second daily Routine (separate from the ETH one) advances
+this portfolio: closes any position that hit its stop/target/20-day timeout using
+that day's real OHLC, opens new positions from a fresh scan pull into freed
+slots, and — like the ETH routine — stays quiet on routine days, only surfacing a
+message for a trade closing, something anomalous, or the graduation bar being met
+for the first time.
+
 ## Usage
 
 ```
@@ -420,15 +456,16 @@ trading_bot/
   backtest/metrics.py           CAGR, Sharpe, max drawdown, win rate, exposure
   options/black_scholes.py       dependency-free Black-Scholes pricer
   options/synthetic_bracket.py   real-underlying / modeled-premium options bracket backtest
-  scanner/entry_exit.py          ATR-based entry/stop/target from one live scan result row
-  paper_trading/engine.py        no-orders paper trading state machine, reuses walk_forward's own selection logic
+  scanner/entry_exit.py          ATR-based entry/stop/target + select_new_candidates from one live scan pull
+  paper_trading/engine.py        no-orders ETH paper trading, reuses walk_forward's own selection logic
+  stock_paper_trading/engine.py  no-orders multi-position stock swing paper trading portfolio
   reports/summary.py            comparison table + equity curve chart
   cli.py                        crypto single-backtest entry point
   walk_forward_cli.py            crypto walk-forward entry point
   bracket_cli.py                 crypto dip-buy bracket entry point
   synthetic_options_cli.py        SPY/SPX synthetic options bracket + sensitivity sweep
   scanner_cli.py                  swing-scan entry/stop/target table from a saved scan JSON
-  paper_trading_cli.py            advance (or bootstrap) one day of paper trading against real data
+  paper_trading_cli.py            advance (or bootstrap) one day of ETH paper trading against real data
 tests/                          unit tests for every module above, incl. Black-Scholes correctness
 data_cache_options/              real underlying/option data fetched during the SPY options work
   premiums/                       raw per-contract premium bars fetched (documented as unusable --

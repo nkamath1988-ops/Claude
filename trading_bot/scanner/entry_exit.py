@@ -68,3 +68,24 @@ def suggest_entry_exit(row: dict, atr_stop_mult: float = 1.5, atr_target_mult: f
         adx=float(cols["Average directional index (14)"]),
         atr=atr,
     )
+
+
+def select_new_candidates(scan_results: list, open_symbols: set, max_new: int,
+                           stale_drift_pct: float = 0.015,
+                           atr_stop_mult: float = 1.5, atr_target_mult: float = 3.0) -> list:
+    """From a fresh run_scan `results` list, pick up to `max_new` fresh (non-stale),
+    not-already-held candidates, freshest signal first. Returns dicts shaped for
+    stock_paper_trading.engine.advance_day's `new_candidates` argument."""
+    fresh = []
+    for row in scan_results:
+        if row["ticker"] in open_symbols:
+            continue
+        s = suggest_entry_exit(row, atr_stop_mult, atr_target_mult)
+        if abs(s.drift_pct) > stale_drift_pct:
+            continue
+        fresh.append(s)
+
+    fresh.sort(key=lambda s: abs(s.drift_pct))
+    return [{"symbol": s.symbol, "entry_price": s.entry_price,
+              "stop_price": s.stop_price, "target_price": s.target_price}
+             for s in fresh[:max_new]]

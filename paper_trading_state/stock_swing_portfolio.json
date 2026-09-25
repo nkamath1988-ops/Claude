@@ -1,0 +1,84 @@
+{
+  "total_capital": 10000.0,
+  "capital_per_trade_pct": 0.1,
+  "max_concurrent": 8,
+  "max_holding_days": 20,
+  "cost_rate": 0.00075,
+  "cash": 2000.0,
+  "open_positions": [
+    {
+      "symbol": "STNG",
+      "entry_date": "2026-09-25",
+      "entry_price": 80.96,
+      "stop_price": 76.90455317229925,
+      "target_price": 89.07089365540149,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    },
+    {
+      "symbol": "BKSY",
+      "entry_date": "2026-09-25",
+      "entry_price": 23.17,
+      "stop_price": 20.853178730674006,
+      "target_price": 27.803642538651992,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    },
+    {
+      "symbol": "OHI",
+      "entry_date": "2026-09-25",
+      "entry_price": 46.33,
+      "stop_price": 45.03087511385846,
+      "target_price": 48.92824977228308,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    },
+    {
+      "symbol": "TX",
+      "entry_date": "2026-09-25",
+      "entry_price": 55.53,
+      "stop_price": 53.43618620786548,
+      "target_price": 59.71762758426904,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    },
+    {
+      "symbol": "TARS",
+      "entry_date": "2026-09-25",
+      "entry_price": 75.96,
+      "stop_price": 71.22138168892185,
+      "target_price": 85.43723662215629,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    },
+    {
+      "symbol": "NVMI",
+      "entry_date": "2026-09-25",
+      "entry_price": 366.8,
+      "stop_price": 342.6938378626785,
+      "target_price": 415.01232427464305,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    },
+    {
+      "symbol": "VOD",
+      "entry_date": "2026-09-25",
+      "entry_price": 16.49,
+      "stop_price": 16.00121101330295,
+      "target_price": 17.467577973394096,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    },
+    {
+      "symbol": "HPQ",
+      "entry_date": "2026-09-25",
+      "entry_price": 31.14,
+      "stop_price": 28.710219794286687,
+      "target_price": 35.99956041142663,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    }
+  ],
+  "closed_trades": [],
+  "last_run_date": "2026-09-25"
+}
