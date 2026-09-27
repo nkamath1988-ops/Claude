@@ -482,6 +482,50 @@ together, since both come from the same "let it run" mechanism. A
 traded off number-of-trades against per-trade size, not the underlying
 win/loss shape.
 
+## Does the ETH walk-forward SMA edge generalize to SPX/Russell 2000?
+
+The one result in this repo that looked like real edge — walk-forward
+re-optimized SMA crossover beating buy-and-hold on ETH (+712% vs +265%,
+Sharpe 0.91 vs 0.68) — was tested on equities to see if it's a genuine SMA
+effect or an ETH-specific artifact. Same methodology exactly: `run_walk_forward`
+re-picks `fast`/`slow` from the trailing 365 days, locks them in, tests on the
+next unseen 90 days, rolls forward; daily bars, 5bps fee + 10bps slippage,
+`periods_per_year=252`. Data: SPX and IWM (Russell 2000 ETF) daily closes,
+2015-01-02 through 2026-09-25 (`data_cache_smc/SPX_daily.csv`,
+`IWM_daily.csv`) — unlike the 4h SMC data, daily bars for both go back over
+a decade with no gaps, since the Nov-2025 real-data floor found earlier in
+this repo turned out to be specific to *intraday* historicals, not daily ones.
+
+**Result: it does not generalize — buy-and-hold wins clearly on both,** the
+opposite of the ETH case:
+
+| | Total return | CAGR | Sharpe | Max DD | Trades |
+|---|---|---|---|---|---|
+| SPX buy-and-hold | +284% | 13.4% | 0.79 | -33.9% | 1 |
+| SPX walk-forward SMA | +62% | 4.6% | 0.48 | -24.1% | 37 |
+| IWM buy-and-hold | +156% | 9.2% | 0.50 | -42.3% | 1 |
+| IWM walk-forward SMA | **-7.9%** | -0.8% | 0.02 | -40.6% | 41 |
+
+On IWM the re-optimized strategy loses money outright over a span where
+simply holding would have returned +156% — not just "underperforms," net
+negative after costs. On SPX it's positive but roughly a fifth of
+buy-and-hold's return for lower Sharpe and only a smaller drawdown reduction
+(-24% vs -34%) to show for it. Same parameter-drift pattern as the ETH run
+(`data_cache_smc/{SPX,IWM}_sma_walkforward_segments.csv` — winning
+fast/slow window changes almost every quarter, never converges), but here it
+isn't compensated by an edge large enough to matter.
+
+**Read plainly: SMA crossover's ETH edge was asset-specific (or crypto-regime
+specific), not a general "re-optimized trend-following beats buy-and-hold"
+effect.** Applied to the two large-cap/small-cap US equity indices requested
+here, the exact same walk-forward process that found edge on ETH finds none
+on SPX and a real loss on IWM. This doesn't retroactively invalidate the ETH
+result (which still has its own caveats above), but it rules out treating
+"walk-forward SMA" as a strategy that travels across assets — each
+market needs its own out-of-sample test, and for SPX/Russell 2000 specifically,
+the honest answer to "what's a profitable strategy" is still buy-and-hold,
+by a wide margin, over this decade-plus window.
+
 ## Usage
 
 ```
