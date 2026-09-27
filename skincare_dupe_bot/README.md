@@ -42,13 +42,27 @@ before trusting it). **Do not spend time trying to "fix" the cvs.com or
 walgreens.com scraping without a paid residential-proxy service** -- that
 would cost money and defeat the reason this was built the way it was.
 
-Realistic consequence: on a first full price-check run against the 31
-seeded dupes, about 4 resolved to a real, current price. The rest either
-aren't carried on target.com under that search term, or my title-matching
-heuristic (see `scrapers/base.py`) was too conservative to confidently
-match them. This is a known v1 gap, not a hidden one -- tightening title
-matching or adding more retailers is the natural next step if this gets
-used for real.
+Realistic consequence: on the first full price-check run against the 31
+seeded dupes, only 4 resolved to a real price -- most failures traced to
+three concrete matcher bugs (an overly literal brand-substring check,
+editorial text in product names polluting the search query, and a price/title
+pairing heuristic that broke when multiple annotation lines stacked between
+them), all fixed and covered by regression tests in `scrapers/base.py`. One
+fix I shipped and then had to revert: a word-overlap fallback for when no
+candidate's title contained the brand. It sounded reasonable but turned out
+unsafe in practice -- verified live that it reported a *Naturium* serum's
+price as if it were "The Ordinary"'s, because generic ingredient words
+("niacinamide", "zinc") overlapped enough to pass its threshold. Removed
+outright: a wrong brand's price feeding an alert or a video script is worse
+than the dupe just not resolving.
+
+After all of that, the verified hit rate is **24/31 (~77%)**, up from 4/31.
+The remaining 7 failures are all "The Ordinary" products specifically --
+Target's search doesn't reliably rank a real listing for that brand from
+this environment/location, so the matcher correctly reports no match rather
+than guessing. That's the honest ceiling of a text-heuristic scraper against
+one retailer; a real DOM-selector scraper or a second working retail source
+would be the next lever if this needs to go higher.
 
 ## Why text cards instead of product photos
 
