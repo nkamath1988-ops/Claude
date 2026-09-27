@@ -448,33 +448,39 @@ explicit `interpolated: true` gap-fill bars that were dropped before use; SPX's
 longer history wasn't pulled for this run to keep the three-way comparison on
 identical dates, but it's available for a bigger-sample SPX-only follow-up.
 
-**Results (5bps fee + 10bps slippage, `swing_length=3`):**
+**Exit early beats waiting out a slow CHoCH.** The first version exited only
+on CHoCH, which let some trades run 6-13 weeks (max 92 days, IWM) waiting for
+a real reversal signal — well past the requested 1-2 week horizon. Per
+explicit direction, `SmcBosChochStrategy` now takes a `max_holding_bars`
+parameter (default 20) that forces an exit on whichever comes first: a
+bearish CHoCH, or the cap. Bar count, not calendar days, because bar density
+varies by symbol and even by day: SPY/IWM average ~1.4 real bars/trading day
+(many days have only one usable 4h bucket, not two), SPX averages ~2.1 —
+so a 20-bar cap lands around 2-3 calendar weeks on average, not an exact
+2-week deadline.
 
-| Symbol | Trades | Win rate | Total return | Sharpe | Max DD | Avg win | Avg loss |
-|---|---|---|---|---|---|---|---|
-| SPY | 7  | 14% | -7.6% | -1.65 | -8.1%  | +1.6% | -1.6% |
-| IWM | 5  | 20% | -2.9% | -0.31 | -9.0%  | +5.1% | -2.0% |
-| SPX | 11 | 18% | -0.9% | -0.11 | -7.2%  | +5.9% | -1.3% |
+**Results (5bps fee + 10bps slippage, `swing_length=3`, `max_holding_bars=20`):**
 
-Honest read: this is **not a profitable strategy on this data**, and the
-sample (5-17 trades over 11 months) is far too small to conclude much either
-way. The shape is the textbook trend-following one — win rate well under 50%,
-but average winners 2-4x the size of average losers, so most of the "edge"
-question comes down to whether the (rare) big trend-continuation trades keep
-showing up often enough to outrun the frequent small false-BOS losses. Over
-this particular window they didn't, for SPY and IWM; SPX came close to
-breakeven, carried almost entirely by one +11.3% trade from an April-June 2026
-uptrend. A `swing_length` sweep (2/3/5) didn't change this picture materially —
-it mostly traded off number-of-trades against per-trade size, not the
-underlying win/loss shape.
+| Symbol | Trades | Win rate | Total return | Sharpe | Max DD | Avg win | Avg loss | Max hold (days) |
+|---|---|---|---|---|---|---|---|---|
+| SPY | 7  | 14% | -4.4% | -1.10 | -7.3% | +5.2% | -1.6% | 29 |
+| IWM | 6  | 33% | -2.1% | -0.28 | -9.0% | +3.0% | -2.0% | 30 |
+| SPX | 15 | 33% | -3.3% | -0.55 | -6.4% | +1.9% | -1.3% | 11 |
 
-**Holding periods came out longer and more variable than the "1-2 week swing
-trade" target**: median holds were 6-8 days (in range), but because the exit
-is purely CHoCH-triggered with no time cap, several trades ran 6-13 weeks
-(max 92 days, IWM) waiting for a real reversal signal that took that long to
-arrive. If a hard time-based exit is wanted to actually enforce the 1-2 week
-horizon, that's a deliberate design change this version doesn't make — it
-would change the strategy's risk profile, not just tidy up an edge case.
+Honest read: still **not a profitable strategy on this data**, and the sample
+(6-15 trades over 11 months) remains too small to conclude much either way.
+Capping the hold does what it was supposed to — the worst-case tail drops from
+92 days to 30, and win rates rise (33% for IWM/SPX vs 14-20% uncapped) since
+more trades now close on a timeout rather than grinding out a loss waiting for
+CHoCH. But it comes at a real cost: SPX's uncapped run was carried almost
+entirely by one +11.3% trade that ran 56 days — the cap would have closed that
+same trade far earlier, and SPX's total return dropped from roughly breakeven
+(-0.9% uncapped) to -3.3% capped. That's the actual tradeoff of exiting early
+on a trend-continuation rule: it caps the downside tail and the upside tail
+together, since both come from the same "let it run" mechanism. A
+`swing_length` sweep (2/3/5) didn't change the overall picture — it mostly
+traded off number-of-trades against per-trade size, not the underlying
+win/loss shape.
 
 ## Usage
 

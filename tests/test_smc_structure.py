@@ -62,9 +62,18 @@ def test_process_structure_matches_hand_trace():
 
 def test_bos_choch_strategy_entries_and_exits_match_hand_trace():
     df = _hand_traced_df()
-    strategy = SmcBosChochStrategy(swing_length=1)
+    strategy = SmcBosChochStrategy(swing_length=1, max_holding_bars=20)
     signal = strategy.generate_signals(df)
     assert signal.tolist() == [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0]
+
+
+def test_max_holding_bars_forces_exit_before_choch_would_fire():
+    # same hand-traced entry at bar 7; CHoCH doesn't hit until bar 10, but a
+    # 2-bar cap should force the exit one bar earlier, at bar 9.
+    df = _hand_traced_df()
+    strategy = SmcBosChochStrategy(swing_length=1, max_holding_bars=2)
+    signal = strategy.generate_signals(df)
+    assert signal.tolist() == [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0]
 
 
 def test_no_position_taken_before_any_bos():
