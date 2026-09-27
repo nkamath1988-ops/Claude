@@ -60,7 +60,14 @@ def test_normalize_strips_punctuation():
 def test_brand_token_handles_punctuated_brands():
     assert brand_token("e.l.f.") == "e"  # first normalized token, punctuation stripped
     assert brand_token("CeraVe") == "cerave"
-    assert brand_token("The Ordinary") == "the"
+
+
+def test_brand_token_skips_leading_stopwords():
+    # Retailers routinely drop the article from their own listing titles
+    # ("Ordinary Niacinamide..." not "The Ordinary Niacinamide...") --
+    # gating on "the" rejected the correct match instead of a wrong one.
+    assert brand_token("The Ordinary") == "ordinary"
+    assert brand_token("Dear, Klairs") == "klairs"
 
 
 def test_derive_search_query_strips_parentheticals_and_trailing_size():

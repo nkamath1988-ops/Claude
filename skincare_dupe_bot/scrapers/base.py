@@ -113,11 +113,24 @@ def normalize(text: str) -> str:
     return re.sub(r"[^a-z0-9\s]", " ", text.lower()).strip()
 
 
+BRAND_STOPWORDS = {"the", "a", "an", "dear"}
+
+
 def brand_token(brand: str) -> str:
-    """First normalized word of a brand name, used as a loose sanity check
-    that a matched title is actually for the right brand."""
-    normalized = normalize(brand)
-    return normalized.split()[0] if normalized else ""
+    """First meaningful normalized word of a brand name, used as a loose
+    sanity check that a matched title is actually for the right brand.
+
+    Skips leading stopwords like "the" (as in "The Ordinary") -- retailers
+    routinely drop the article from their own listing titles ("Ordinary
+    Niacinamide..."), so gating on "the" rejects the correct match instead
+    of a wrong one. Falls back to the raw first word if every word is a
+    stopword, rather than returning an empty (always-failing) token.
+    """
+    words = normalize(brand).split()
+    for word in words:
+        if word not in BRAND_STOPWORDS:
+            return word
+    return words[0] if words else ""
 
 
 # Trailing descriptive text ("(thin layer as occlusive overnight)", "- 8 fl
