@@ -406,6 +406,76 @@ slots, and — like the ETH routine — stays quiet on routine days, only surfac
 message for a trade closing, something anomalous, or the graduation bar being met
 for the first time.
 
+## Smart Money Concepts (SMC): SPY/SPX/IWM, 4h structure, 1-2 week swing target
+
+A "BOS continuation + CHoCH exit" backtest, from definitions given verbatim:
+higher-highs/higher-lows = bullish structure (vice versa for bearish); a swing
+high/low is the point that caused the opposing swing low/high; a "strong" swing
+point is the one that preceded a break of structure in its direction; a Break
+of Structure (BOS) signals trend continuation and an expected pullback; a
+Change of Character (CHoCH) is the first break *against* the prevailing trend,
+signaling a possible reversal.
+
+**Swing detection and its inherent lag** (`trading_bot/strategies/smc_structure.py`):
+swing points are found with a symmetric fractal — bar *i* is a swing high/low
+only if it's strictly the max/min of the `swing_length` bars on both sides of
+it. This means a swing point can't be confirmed until `swing_length` bars after
+it forms (there's no way to know "nothing since then exceeded it" any sooner).
+Every downstream signal (trend, BOS, CHoCH, strong high/low, HH/HL/LH/LL
+labels) is applied starting only from that confirmation bar, never from the
+bar the swing actually occurred on — this is the crypto/options work's
+no-lookahead discipline applied to a new kind of signal. BOS/CHoCH are
+close-based breaks of the most recently *confirmed* swing level, not
+wick-based, mirrored consistently for both directions.
+
+**The trade rule** (`trading_bot/strategies/smc_bos_choch.py`, long-only by
+design — the rule is named "CHoCH exit," not "CHoCH flip"): after a bullish
+BOS, wait for the next confirmed swing low to print *higher* than the previous
+one (a genuine HL — the pullback ending and the strong low forming); enter
+long there. Exit to flat the moment a bearish CHoCH breaks that same reference
+low. Going long again after an exit requires an entirely fresh bullish
+break-and-pullback cycle.
+
+**Data:** 4h bars, Nov 3 2025 through Sep 25 2026 (~11 months, ~2-3 real bars/
+trading day), the same window for all three symbols so the comparison is
+apples-to-apples. SPY and IWM (`get_equity_historicals`) hit a hard real-data
+floor at 2025-11-03 — everything earlier came back flat/zero-volume in this
+environment, the same boundary found during the SPY-options work. SPX
+(`get_index_historicals`) has real data much further back (confirmed real for
+October 2024, empty for September 2024 and earlier in spot checks) but only
+answers narrow (~1-month) date ranges per call, and mixes real bars with
+explicit `interpolated: true` gap-fill bars that were dropped before use; SPX's
+longer history wasn't pulled for this run to keep the three-way comparison on
+identical dates, but it's available for a bigger-sample SPX-only follow-up.
+
+**Results (5bps fee + 10bps slippage, `swing_length=3`):**
+
+| Symbol | Trades | Win rate | Total return | Sharpe | Max DD | Avg win | Avg loss |
+|---|---|---|---|---|---|---|---|
+| SPY | 7  | 14% | -7.6% | -1.65 | -8.1%  | +1.6% | -1.6% |
+| IWM | 5  | 20% | -2.9% | -0.31 | -9.0%  | +5.1% | -2.0% |
+| SPX | 11 | 18% | -0.9% | -0.11 | -7.2%  | +5.9% | -1.3% |
+
+Honest read: this is **not a profitable strategy on this data**, and the
+sample (5-17 trades over 11 months) is far too small to conclude much either
+way. The shape is the textbook trend-following one — win rate well under 50%,
+but average winners 2-4x the size of average losers, so most of the "edge"
+question comes down to whether the (rare) big trend-continuation trades keep
+showing up often enough to outrun the frequent small false-BOS losses. Over
+this particular window they didn't, for SPY and IWM; SPX came close to
+breakeven, carried almost entirely by one +11.3% trade from an April-June 2026
+uptrend. A `swing_length` sweep (2/3/5) didn't change this picture materially —
+it mostly traded off number-of-trades against per-trade size, not the
+underlying win/loss shape.
+
+**Holding periods came out longer and more variable than the "1-2 week swing
+trade" target**: median holds were 6-8 days (in range), but because the exit
+is purely CHoCH-triggered with no time cap, several trades ran 6-13 weeks
+(max 92 days, IWM) waiting for a real reversal signal that took that long to
+arrive. If a hard time-based exit is wanted to actually enforce the 1-2 week
+horizon, that's a deliberate design change this version doesn't make — it
+would change the strategy's risk profile, not just tidy up an edge case.
+
 ## Usage
 
 ```
