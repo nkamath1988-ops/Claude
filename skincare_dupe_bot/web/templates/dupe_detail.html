@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="brand">{{ dupe.kbeauty_product.brand }}</div>
+  <h2 style="margin: 4px 0;">{{ dupe.kbeauty_product.name }}</h2>
+  <div class="muted">Typical K-beauty price: ${{ "%.2f"|format(dupe.kbeauty_product.typical_price_usd or 0) }}</div>
+
+  <hr style="border: none; border-top: 1px solid #f0e5e1; margin: 16px 0;">
+
+  <div class="brand">{{ dupe.retailer or "drugstore" }} dupe</div>
+  <h3 style="margin: 4px 0;">{{ dupe.brand }} {{ dupe.name }}</h3>
+  <div class="price">${{ "%.2f"|format(dupe.last_known_price_usd or dupe.typical_price_usd or 0) }}</div>
+  <p class="muted">{{ dupe.match_notes }}</p>
+  {% if dupe.product_url %}<p><a href="{{ dupe.product_url }}" target="_blank">View at retailer &rarr;</a></p>{% endif %}
+
+  <form method="post" action="{{ url_for('trigger_price_check', dupe_id=dupe.id) }}" style="display:inline;">
+    <button type="submit">Check price now</button>
+  </form>
+  <form method="post" action="{{ url_for('trigger_video', dupe_id=dupe.id) }}" style="display:inline;">
+    <button type="submit">Generate reel now</button>
+  </form>
+</div>
+
+<div class="card">
+  <h3>Price history</h3>
+  {% if history %}
+  <ul>
+    {% for h in history %}
+    <li>{{ h.checked_at.strftime("%Y-%m-%d %H:%M") }} &mdash; ${{ "%.2f"|format(h.price_usd) }}{% if not h.in_stock %} (out of stock){% endif %}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">No price checks recorded yet.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3>Generated reels</h3>
+  {% if videos %}
+  {% for v in videos %}
+  <div class="dupe-row">
+    <video controls src="{{ url_for('media', filename=v.file_path.split('/')[-1]) }}"></video>
+    <p class="muted">{{ v.caption }}</p>
+    <p class="muted">{{ v.hashtags }}</p>
+    <p class="muted">{{ v.created_at.strftime("%Y-%m-%d %H:%M") }} &middot; {{ v.trigger_reason }}</p>
+  </div>
+  {% endfor %}
+  {% else %}
+  <p class="muted">No reels generated for this dupe yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Generated Reels</h2>
+{% if videos %}
+{% for v in videos %}
+<div class="card">
+  <video controls src="{{ url_for('media', filename=v.file_path.split('/')[-1]) }}"></video>
+  <p><a href="{{ url_for('dupe_detail', dupe_id=v.dupe_id) }}">{{ v.dupe.brand }} {{ v.dupe.name }}</a></p>
+  <p class="muted">{{ v.caption }}</p>
+  <p class="muted">{{ v.hashtags }}</p>
+  <p class="muted">{{ v.created_at.strftime("%Y-%m-%d %H:%M") }} &middot; {{ v.trigger_reason }}</p>
+</div>
+{% endfor %}
+{% else %}
+<p class="muted">No reels generated yet. Run the scheduler or generate one from a dupe's page.</p>
+{% endif %}
+{% endblock %}

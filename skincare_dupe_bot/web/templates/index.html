@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="get" style="margin-bottom: 18px;">
+  <input type="text" name="q" placeholder="Search brand or product..." value="{{ q }}">
+</form>
+
+{% for kb in kbeauty_products %}
+<div class="card">
+  <div class="brand">{{ kb.brand }}</div>
+  <div><strong>{{ kb.name }}</strong> &middot; <span class="muted">{{ kb.category or "" }}</span></div>
+  <div class="price">${{ "%.2f"|format(kb.typical_price_usd or 0) }}</div>
+
+  {% for dupe in kb.dupes %}
+  <div class="dupe-row">
+    <div class="brand">{{ dupe.retailer or "drugstore" }} dupe</div>
+    <div><a href="{{ url_for('dupe_detail', dupe_id=dupe.id) }}"><strong>{{ dupe.brand }} {{ dupe.name }}</strong></a></div>
+    <div class="price">${{ "%.2f"|format(dupe.last_known_price_usd or dupe.typical_price_usd or 0) }}</div>
+    <div class="muted">{{ dupe.match_notes }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="muted">No products match "{{ q }}".</p>
+{% endfor %}
+{% endblock %}

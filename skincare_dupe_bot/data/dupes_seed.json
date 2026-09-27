@@ -1,0 +1,183 @@
+[
+  {
+    "kbeauty": {"brand": "COSRX", "name": "Advanced Snail 96 Mucin Power Essence", "category": "essence", "key_actives": "snail secretion filtrate, hyaluronic acid", "typical_price_usd": 25.0},
+    "dupes": [
+      {"brand": "e.l.f.", "name": "Holy Hydration! Face Cream (layered under serum)", "category": "essence-alt", "key_actives": "hyaluronic acid, squalane", "retailer": "cvs", "match_notes": "No snail mucin at drugstore price point; closest functional match on hydration/barrier support, not an ingredient match.", "typical_price_usd": 10.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "COSRX", "name": "The Niacinamide 15% Power Serum", "category": "serum", "key_actives": "niacinamide 15%, arbutin", "typical_price_usd": 24.0},
+    "dupes": [
+      {"brand": "The Ordinary", "name": "Niacinamide 10% + Zinc 1%", "category": "serum", "key_actives": "niacinamide 10%, zinc PCA", "retailer": "target", "match_notes": "Same active class at lower concentration; widely available at Target/Ulta rather than a true drugstore.", "typical_price_usd": 6.5}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "COSRX", "name": "AHA/BHA Clarifying Treatment Toner", "category": "toner", "key_actives": "glycolic acid, BHA (betaine salicylate)", "typical_price_usd": 20.0},
+    "dupes": [
+      {"brand": "Stridex", "name": "Maximum Strength Pads", "category": "exfoliant", "key_actives": "salicylic acid 2%", "retailer": "cvs", "match_notes": "Same BHA family for exfoliation; pad format vs. toner, stronger concentration so patch test first.", "typical_price_usd": 7.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Laneige", "name": "Water Sleeping Mask", "category": "sleeping mask", "key_actives": "hyaluronic acid, sleep-tox blend, mineral water", "typical_price_usd": 29.0},
+    "dupes": [
+      {"brand": "Aquaphor", "name": "Healing Ointment (thin layer as occlusive overnight)", "category": "occlusive", "key_actives": "petrolatum, glycerin", "retailer": "cvs", "match_notes": "Very different formula philosophy (occlusive vs. humectant gel); comparable for overnight moisture lock, not texture.", "typical_price_usd": 6.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Innisfree", "name": "Green Tea Seed Serum", "category": "serum", "key_actives": "green tea extract, hyaluronic acid", "typical_price_usd": 28.0},
+    "dupes": [
+      {"brand": "Thayers", "name": "Witch Hazel Toner with Green Tea", "category": "toner", "key_actives": "witch hazel, green tea extract, aloe vera", "retailer": "cvs", "match_notes": "Shares green tea antioxidant angle; toner not serum, lighter hydration.", "typical_price_usd": 11.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Etude House", "name": "SoonJung 2x Barrier Intensive Cream", "category": "moisturizer", "key_actives": "panthenol, madecassoside, ceramide", "typical_price_usd": 18.0},
+    "dupes": [
+      {"brand": "Vanicream", "name": "Moisturizing Cream", "category": "moisturizer", "key_actives": "fragrance-free, dye-free, barrier-repair blend", "retailer": "cvs", "match_notes": "Same 'sensitive/barrier repair, no fragrance' positioning; ingredient list differs but purpose matches closely.", "typical_price_usd": 14.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Beauty of Joseon", "name": "Glow Deep Serum", "category": "serum", "key_actives": "niacinamide 2%, propolis", "typical_price_usd": 17.0},
+    "dupes": [
+      {"brand": "The Ordinary", "name": "Niacinamide 10% + Zinc 1%", "category": "serum", "key_actives": "niacinamide, zinc PCA", "retailer": "target", "match_notes": "Both niacinamide-led; Beauty of Joseon adds propolis which has no drugstore equivalent.", "typical_price_usd": 6.5}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Some By Mi", "name": "AHA BHA PHA 30 Days Miracle Toner", "category": "toner", "key_actives": "AHA/BHA/PHA blend, tea tree", "typical_price_usd": 22.0},
+    "dupes": [
+      {"brand": "Stridex", "name": "Maximum Strength Pads", "category": "exfoliant", "key_actives": "salicylic acid 2%", "retailer": "cvs", "match_notes": "Simpler single-acid version of a multi-acid toner; good starting point before the stronger K-beauty version.", "typical_price_usd": 7.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Missha", "name": "Time Revolution First Treatment Essence", "category": "essence", "key_actives": "fermented yeast extract (Bifida)", "typical_price_usd": 40.0},
+    "dupes": [
+      {"brand": "Thayers", "name": "Rose Petal Witch Hazel Toner", "category": "toner", "key_actives": "witch hazel, rosewater, aloe vera", "retailer": "cvs", "match_notes": "No fermentation-derived actives at drugstore; matched on 'first step hydrating toner' role, not ingredients.", "typical_price_usd": 11.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Dr. Jart+", "name": "Cicapair Tiger Grass Cream", "category": "moisturizer", "key_actives": "centella asiatica (cica), madecassoside", "typical_price_usd": 48.0},
+    "dupes": [
+      {"brand": "La Roche-Posay", "name": "Cicaplast Baume B5", "category": "balm/cream", "key_actives": "panthenol, madecassoside", "retailer": "cvs", "match_notes": "Real overlap: both lean on madecassoside/cica-family actives for redness and barrier repair.", "typical_price_usd": 17.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Klairs", "name": "Supple Preparation Facial Toner", "category": "toner", "key_actives": "rooibos extract, hyaluronic acid, low pH", "typical_price_usd": 19.0},
+    "dupes": [
+      {"brand": "Thayers", "name": "Witch Hazel Toner (unscented)", "category": "toner", "key_actives": "witch hazel, aloe vera, glycerin", "retailer": "cvs", "match_notes": "Both fragrance-conscious hydrating toners; Klairs is lower pH and more humectant-forward.", "typical_price_usd": 11.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Torriden", "name": "Dive-In Low Molecular Hyaluronic Acid Serum", "category": "serum", "key_actives": "5 types of hyaluronic acid", "typical_price_usd": 18.0},
+    "dupes": [
+      {"brand": "The Ordinary", "name": "Hyaluronic Acid 2% + B5", "category": "serum", "key_actives": "hyaluronic acid, vitamin B5", "retailer": "target", "match_notes": "Direct actives overlap on hyaluronic acid hydration; Torriden uses more molecular weight variants.", "typical_price_usd": 8.5},
+      {"brand": "Neutrogena", "name": "Hydro Boost Water Gel", "category": "moisturizer", "key_actives": "hyaluronic acid", "retailer": "cvs", "match_notes": "Gel-cream format vs. serum, but same hero ingredient and gel texture people compare it to.", "typical_price_usd": 20.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Round Lab", "name": "1025 Dokdo Toner", "category": "toner", "key_actives": "birch sap, panthenol", "typical_price_usd": 19.0},
+    "dupes": [
+      {"brand": "Thayers", "name": "Witch Hazel Toner (unscented)", "category": "toner", "key_actives": "witch hazel, aloe vera", "retailer": "cvs", "match_notes": "Matched on gentle daily hydrating-toner role; birch sap has no direct drugstore equivalent.", "typical_price_usd": 11.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Anua", "name": "Heartleaf 77% Soothing Toner", "category": "toner", "key_actives": "houttuynia cordata (heartleaf) extract 77%", "typical_price_usd": 19.0},
+    "dupes": [
+      {"brand": "Thayers", "name": "Witch Hazel Toner (unscented)", "category": "toner", "key_actives": "witch hazel, aloe vera", "retailer": "cvs", "match_notes": "Both soothing, alcohol-free hydrating toners; heartleaf's anti-inflammatory profile is unique to it.", "typical_price_usd": 11.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "SKIN1004", "name": "Madagascar Centella Ampoule", "category": "serum", "key_actives": "centella asiatica extract 100%", "typical_price_usd": 20.0},
+    "dupes": [
+      {"brand": "La Roche-Posay", "name": "Cicaplast Baume B5", "category": "balm/cream", "key_actives": "panthenol, madecassoside", "retailer": "cvs", "match_notes": "Shares the centella/cica-derived soothing angle; different texture (ampoule vs. balm).", "typical_price_usd": 17.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Numbuzin", "name": "No.3 Skin Softening Serum", "category": "serum", "key_actives": "niacinamide, adenosine, panthenol", "typical_price_usd": 24.0},
+    "dupes": [
+      {"brand": "The Ordinary", "name": "Niacinamide 10% + Zinc 1%", "category": "serum", "key_actives": "niacinamide, zinc PCA", "retailer": "target", "match_notes": "Niacinamide overlap; Numbuzin adds adenosine (anti-aging) which the drugstore version lacks.", "typical_price_usd": 6.5}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Isntree", "name": "Hyaluronic Acid Toner Serum", "category": "toner/serum", "key_actives": "hyaluronic acid, panthenol", "typical_price_usd": 21.0},
+    "dupes": [
+      {"brand": "Neutrogena", "name": "Hydro Boost Water Gel", "category": "moisturizer", "key_actives": "hyaluronic acid", "retailer": "cvs", "match_notes": "Same hero hydrator; different step in routine (toner-serum vs. moisturizer gel).", "typical_price_usd": 20.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Pyunkang Yul", "name": "Essence Toner", "category": "toner", "key_actives": "minimal ingredient list, no fragrance, humectants", "typical_price_usd": 17.0},
+    "dupes": [
+      {"brand": "Thayers", "name": "Witch Hazel Toner (unscented)", "category": "toner", "key_actives": "witch hazel, aloe vera, glycerin", "retailer": "cvs", "match_notes": "Both minimalist, fragrance-free hydrating toners aimed at sensitive skin.", "typical_price_usd": 11.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Benton", "name": "Snail Bee High Content Essence", "category": "essence", "key_actives": "snail secretion filtrate, bee venom", "typical_price_usd": 18.0},
+    "dupes": [
+      {"brand": "The Ordinary", "name": "Niacinamide 10% + Zinc 1%", "category": "serum", "key_actives": "niacinamide, zinc PCA", "retailer": "target", "match_notes": "No snail/bee equivalent at drugstore; matched on 'soothing + repair' functional role only.", "typical_price_usd": 6.5}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Illiyoon", "name": "Ceramide Ato Concentrate Cream", "category": "moisturizer", "key_actives": "ceramides, panthenol", "typical_price_usd": 19.0},
+    "dupes": [
+      {"brand": "CeraVe", "name": "Moisturizing Cream", "category": "moisturizer", "key_actives": "ceramides (1, 3, 6-II), hyaluronic acid", "retailer": "cvs", "match_notes": "This is one of the closest real matches in the whole list: both are ceramide-first barrier creams.", "typical_price_usd": 19.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Dear, Klairs", "name": "Rich Moist Soothing Cream", "category": "moisturizer", "key_actives": "centella, shea butter, ceramide", "typical_price_usd": 25.0},
+    "dupes": [
+      {"brand": "CeraVe", "name": "Moisturizing Cream", "category": "moisturizer", "key_actives": "ceramides, hyaluronic acid", "retailer": "cvs", "match_notes": "Both rich barrier-repair creams for dry/sensitive skin; Klairs adds centella for soothing.", "typical_price_usd": 19.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "COSRX", "name": "Centella Blemish Cream", "category": "moisturizer/spot", "key_actives": "centella asiatica, panthenol", "typical_price_usd": 16.0},
+    "dupes": [
+      {"brand": "La Roche-Posay", "name": "Cicaplast Baume B5", "category": "balm/cream", "key_actives": "panthenol, madecassoside", "retailer": "cvs", "match_notes": "Both target redness/irritation recovery with centella-family actives.", "typical_price_usd": 17.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Abib", "name": "Heartleaf Toner Fresh Mode", "category": "toner", "key_actives": "heartleaf extract, salicylic acid (trace)", "typical_price_usd": 24.0},
+    "dupes": [
+      {"brand": "Thayers", "name": "Witch Hazel Toner (unscented)", "category": "toner", "key_actives": "witch hazel, aloe vera", "retailer": "cvs", "match_notes": "Matched on soothing daily toner role; heartleaf's specific anti-inflammatory compounds are unique.", "typical_price_usd": 11.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Goodal", "name": "Green Tangerine Vita C Dark Spot Serum", "category": "serum", "key_actives": "vitamin C derivative, green tangerine extract", "typical_price_usd": 24.0},
+    "dupes": [
+      {"brand": "The Ordinary", "name": "Vitamin C Suspension 23% + HA Spheres 2%", "category": "serum", "key_actives": "L-ascorbic acid 23%", "retailer": "target", "match_notes": "Both vitamin-C-led brightening serums; Ordinary uses a much higher, harsher concentration.", "typical_price_usd": 7.5}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Beauty of Joseon", "name": "Relief Sun Rice + Probiotics SPF50+", "category": "sunscreen", "key_actives": "chemical UV filters, rice extract, probiotics", "typical_price_usd": 18.0},
+    "dupes": [
+      {"brand": "Neutrogena", "name": "Ultra Sheer Dry-Touch SPF 55", "category": "sunscreen", "key_actives": "chemical UV filters (avobenzone, octisalate)", "retailer": "cvs", "match_notes": "Both lightweight, non-greasy chemical sunscreens; K-beauty version tends to sit more invisibly on darker skin tones.", "typical_price_usd": 11.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Round Lab", "name": "Birch Juice Moisturizing Cream", "category": "moisturizer", "key_actives": "birch sap, ceramide", "typical_price_usd": 22.0},
+    "dupes": [
+      {"brand": "Cetaphil", "name": "Moisturizing Cream", "category": "moisturizer", "key_actives": "glycerin, panthenol", "retailer": "cvs", "match_notes": "Both fragrance-light, barrier-focused daily moisturizers for normal/dry skin.", "typical_price_usd": 15.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Then I Met You", "name": "Skin Savior Cleansing Balm", "category": "oil cleanser", "key_actives": "botanical oil blend", "typical_price_usd": 34.0},
+    "dupes": [
+      {"brand": "CeraVe", "name": "Healing Ointment (as balm-to-oil cleanse)", "category": "occlusive", "key_actives": "petrolatum, ceramides", "retailer": "cvs", "match_notes": "Different intended use (Then I Met You is a cleanser); listed as a budget occlusive-cleanse workaround, not a true dupe.", "typical_price_usd": 12.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Ma:nyo", "name": "Bifida Biome Complex Ampoule", "category": "serum", "key_actives": "bifida ferment lysate, niacinamide", "typical_price_usd": 32.0},
+    "dupes": [
+      {"brand": "The Ordinary", "name": "Niacinamide 10% + Zinc 1%", "category": "serum", "key_actives": "niacinamide, zinc PCA", "retailer": "target", "match_notes": "Niacinamide overlap only; fermented-ingredient complex has no direct drugstore equivalent.", "typical_price_usd": 6.5}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Mixsoon", "name": "Bean Essence", "category": "essence", "key_actives": "black bean extract, soybean germ extract", "typical_price_usd": 20.0},
+    "dupes": [
+      {"brand": "Neutrogena", "name": "Hydro Boost Water Gel", "category": "moisturizer", "key_actives": "hyaluronic acid", "retailer": "cvs", "match_notes": "Matched on lightweight hydration step; bean-fermentation actives have no drugstore counterpart.", "typical_price_usd": 20.0}
+    ]
+  },
+  {
+    "kbeauty": {"brand": "Aestura", "name": "Atobarrier 365 Cream", "category": "moisturizer", "key_actives": "ceramide, MLE (multi-lamellar emulsion)", "typical_price_usd": 32.0},
+    "dupes": [
+      {"brand": "CeraVe", "name": "Moisturizing Cream", "category": "moisturizer", "key_actives": "ceramides, hyaluronic acid", "retailer": "cvs", "match_notes": "Both ceramide-forward barrier creams for eczema-prone/very dry skin.", "typical_price_usd": 19.0}
+    ]
+  }
+]

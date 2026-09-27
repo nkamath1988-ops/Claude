@@ -3,3 +3,12 @@ __pycache__/
 data_cache/*.csv
 reports_out*/
 .pytest_cache/
+
+# skincare_dupe_bot
+.venv_skincare/
+skincare_dupe_bot/skincare_dupes.db
+skincare_dupe_bot/output/videos/*
+skincare_dupe_bot/output/ready_to_upload/*
+!skincare_dupe_bot/output/videos/.gitkeep
+!skincare_dupe_bot/output/ready_to_upload/.gitkeep
+.env

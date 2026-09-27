@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}K-Beauty Dupe Tracker{% endblock %}</title>
+<style>
+  :root {
+    --bg: #fdf8f5; --card: #ffffff; --text: #2e211e; --muted: #7a6a65;
+    --accent: #c45c4f; --accent-soft: #f5e3df; --green: #3a8057;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
+  header { background: var(--accent); color: #fff; padding: 18px 20px; }
+  header a { color: #fff; text-decoration: none; font-weight: 700; font-size: 1.2rem; }
+  nav { display: flex; gap: 16px; margin-top: 8px; }
+  nav a { color: #fff; opacity: 0.9; text-decoration: none; font-size: 0.9rem; }
+  main { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
+  .card { background: var(--card); border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .brand { color: var(--accent); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  .price { font-weight: 700; }
+  .muted { color: var(--muted); font-size: 0.9rem; }
+  .savings { color: var(--green); font-weight: 700; }
+  a.button { display: inline-block; background: var(--accent); color: #fff; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; margin-right: 8px; }
+  button { background: var(--accent-soft); border: none; color: var(--accent); padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  input[type=text] { padding: 10px 14px; border-radius: 8px; border: 1px solid #e2d5d0; width: 100%; max-width: 320px; font-size: 1rem; }
+  .dupe-row { border-top: 1px solid #f0e5e1; padding-top: 10px; margin-top: 10px; }
+  video { width: 100%; max-width: 320px; border-radius: 10px; background: #000; }
+</style>
+</head>
+<body>
+<header>
+  <a href="{{ url_for('index') }}">K-Beauty Dupe Tracker</a>
+  <nav>
+    <a href="{{ url_for('index') }}">Dupes</a>
+    <a href="{{ url_for('videos') }}">Generated Reels</a>
+  </nav>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+</body>
+</html>
