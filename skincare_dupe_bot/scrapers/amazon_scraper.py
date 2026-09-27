@@ -8,19 +8,21 @@ from urllib.parse import quote_plus
 
 from skincare_dupe_bot.scrapers.base import (
     ScrapedPrice,
+    best_match,
     browser_page,
+    derive_search_query,
     extract_price_title_pairs,
     looks_blocked,
-    score_title_match,
+    query_words_for,
 )
 
 SEARCH_URL = "https://www.amazon.com/s?k={query}"
 
 
 def search_product_price(brand: str, name: str) -> ScrapedPrice:
-    query_text = f"{brand} {name}"
-    url = SEARCH_URL.format(query=quote_plus(query_text))
-    query_words = [w.lower() for w in query_text.split() if len(w) > 2]
+    search_query = derive_search_query(brand, name)
+    url = SEARCH_URL.format(query=quote_plus(search_query))
+    query_words = query_words_for(brand, name)
 
     with browser_page() as page:
         try:
@@ -31,24 +33,15 @@ def search_product_price(brand: str, name: str) -> ScrapedPrice:
             return ScrapedPrice(price_usd=None, in_stock=False, product_url=url)
 
         if looks_blocked(page) or "interstitial" in page.content().lower():
-            print(f"[amazon_scraper] blocked for query '{query_text}' (expected from this network)")
+            print(f"[amazon_scraper] blocked for query '{search_query}' (expected from this network)")
             return ScrapedPrice(price_usd=None, in_stock=False, product_url=url)
 
         body_text = page.locator("body").inner_text()
 
-    best_price, best_title, best_score = None, None, -1
-    for price, title in extract_price_title_pairs(body_text):
-        score = score_title_match(query_words, title)
-        if score > best_score:
-            best_price, best_title, best_score = price, title, score
+    candidates = list(extract_price_title_pairs(body_text))
+    price, title = best_match(candidates, brand, query_words)
 
-    brand_word = brand.lower().split()[0]
-    if best_title is None or brand_word not in (best_title or "").lower():
+    if price is None:
         return ScrapedPrice(price_usd=None, in_stock=False, product_url=url)
 
-    return ScrapedPrice(
-        price_usd=best_price,
-        in_stock=best_price is not None,
-        product_url=url,
-        matched_title=best_title,
-    )
+    return ScrapedPrice(price_usd=price, in_stock=True, product_url=url, matched_title=title)

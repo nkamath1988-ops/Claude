@@ -106,6 +106,71 @@ def extract_price_title_pairs(body_text: str):
         yield price, next_line
 
 
+def normalize(text: str) -> str:
+    """Lowercase and strip punctuation so 'e.l.f.' matches 'ELF', 'Dear,
+    Klairs' matches 'Dear Klairs', etc. Both sides of every comparison in
+    this module go through this before comparing."""
+    return re.sub(r"[^a-z0-9\s]", " ", text.lower()).strip()
+
+
+def brand_token(brand: str) -> str:
+    """First normalized word of a brand name, used as a loose sanity check
+    that a matched title is actually for the right brand."""
+    normalized = normalize(brand)
+    return normalized.split()[0] if normalized else ""
+
+
+# Trailing descriptive text ("(thin layer as occlusive overnight)", "- 8 fl
+# oz", "(unscented)") belongs in captions and match notes, not in a search
+# box -- sending it as a literal query returns worse or no results. Strip it
+# for the query only; the original name still drives all display text.
+_PARENTHETICAL_RE = re.compile(r"\([^)]*\)")
+_TRAILING_DASH_RE = re.compile(r"\s+-\s+.*$")
+
+
+def derive_search_query(brand: str, name: str) -> str:
+    cleaned = _PARENTHETICAL_RE.sub("", name)
+    cleaned = _TRAILING_DASH_RE.sub("", cleaned)
+    cleaned = " ".join(cleaned.split())
+    return f"{brand} {cleaned}".strip()
+
+
+def query_words_for(brand: str, name: str) -> list:
+    cleaned_query = derive_search_query(brand, name)
+    return [w for w in normalize(cleaned_query).split() if len(w) > 2]
+
+
 def score_title_match(query_words, title: str) -> int:
-    title_lower = title.lower()
-    return sum(1 for w in query_words if w in title_lower)
+    title_words = set(normalize(title).split())
+    return sum(1 for w in query_words if w in title_words)
+
+
+def best_match(candidates, brand: str, query_words):
+    """Pick the best (price, title) candidate for a given brand.
+
+    Prefers candidates whose title actually contains the brand name (the
+    common case); if none do -- e.g. the brand token got mangled by a
+    layout quirk -- falls back to the single strongest word-overlap match
+    rather than giving up outright, as long as it shares at least one real
+    word with the query (never return a match on zero overlap).
+    """
+    token = brand_token(brand)
+    branded, unbranded = [], []
+    for price, title in candidates:
+        score = score_title_match(query_words, title)
+        entry = (score, price, title)
+        if token and token in normalize(title).split():
+            branded.append(entry)
+        else:
+            unbranded.append(entry)
+
+    if branded:
+        best = max(branded, key=lambda e: e[0])
+        return best[1], best[2]
+
+    if unbranded:
+        best = max(unbranded, key=lambda e: e[0])
+        if best[0] >= 1:
+            return best[1], best[2]
+
+    return None, None
