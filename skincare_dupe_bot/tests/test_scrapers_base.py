@@ -31,6 +31,26 @@ $14.99
 When purchased online
 """
 
+# Real layout captured from a Cetaphil search -- up to two annotation lines
+# ("Coupon: $2 off", "+ 1 deal") stack between the price and the title,
+# sometimes with a third ("When purchased online") on top of those two.
+STACKED_ANNOTATIONS_BODY_TEXT = """
+Ships free - exclusions apply
+Add to cart
+$16.99
+Coupon: $2 off
++ 1 deal
+Cetaphil Nourishing Body Cream with Vitamin E - 16oz
+4.8
+Ships free - exclusions apply
+Add to cart
+$19.79
+Coupon: $2 off
++ 1 deal
+When purchased online
+Cetaphil Deep Hydration Water Gel Moisturizer - Travel Size - 1.7oz
+"""
+
 
 def test_extract_price_title_pairs_finds_real_pairs():
     pairs = list(extract_price_title_pairs(SAMPLE_BODY_TEXT))
@@ -43,6 +63,18 @@ def test_extract_price_title_pairs_skips_promo_annotation_line():
     pairs = list(extract_price_title_pairs(SAMPLE_BODY_TEXT))
     titles = [t for _, t in pairs]
     assert "When purchased online" not in titles
+
+
+def test_extract_price_title_pairs_skips_multiple_stacked_annotations():
+    # This is the exact bug found live: a naive "next line" pairing grabbed
+    # "Coupon: $2 off" as the title for every Cetaphil result, so nothing
+    # ever matched the brand and the whole product line up looked absent.
+    pairs = list(extract_price_title_pairs(STACKED_ANNOTATIONS_BODY_TEXT))
+    assert (16.99, "Cetaphil Nourishing Body Cream with Vitamin E - 16oz") in pairs
+    assert (19.79, "Cetaphil Deep Hydration Water Gel Moisturizer - Travel Size - 1.7oz") in pairs
+    titles = [t for _, t in pairs]
+    assert not any("coupon" in t.lower() for t in titles)
+    assert not any("deal" in t.lower() for t in titles)
 
 
 def test_score_title_match_prefers_more_overlapping_words():
@@ -80,6 +112,22 @@ def test_derive_search_query_strips_parentheticals_and_trailing_size():
     assert q2 == "CeraVe Gentle Scalp Care Conditioner"
 
 
+def test_derive_search_query_drops_leading_brand_stopword():
+    # Verified live: Target returns zero results for any query starting
+    # with the literal word "The", even for a brand it stocks.
+    q = derive_search_query("The Ordinary", "Niacinamide 10% + Zinc 1%")
+    assert not q.lower().startswith("the ")
+    assert q.startswith("Ordinary")
+
+
+def test_derive_search_query_strips_percentages_and_lone_plus():
+    q = derive_search_query("The Ordinary", "Niacinamide 10% + Zinc 1%")
+    assert "%" not in q
+    assert "+" not in q
+    assert "Niacinamide" in q
+    assert "Zinc" in q
+
+
 def test_query_words_for_uses_cleaned_query():
     words = query_words_for("Aquaphor", "Healing Ointment (thin layer as occlusive overnight)")
     assert "thin" not in words
@@ -98,12 +146,20 @@ def test_best_match_prefers_branded_candidate_even_with_lower_word_overlap():
     assert "CeraVe" in title
 
 
-def test_best_match_falls_back_to_word_overlap_when_brand_missing_from_any_title():
-    candidates = [(11.49, "CeraVe Baby Body Gentle Moisturizing Body Cream - 5 fl oz")]
+def test_best_match_returns_none_when_brand_missing_from_every_title():
+    # Regression test for a real false positive found live: when Target
+    # didn't rank a genuine "The Ordinary" listing, a since-removed
+    # word-overlap fallback reported a Naturium product's price as if it
+    # were The Ordinary's, because "niacinamide"/"zinc" overlapped enough.
+    # A missing brand token must be a hard no-match, never a best guess.
+    candidates = [
+        (11.49, "CeraVe Baby Body Gentle Moisturizing Body Cream - 5 fl oz"),
+        (13.59, "Naturium Niacinamide Serum 12% Plus Zinc 2% - 1 fl oz"),
+    ]
     query_words = query_words_for("Cetaphil", "Moisturizing Cream")
     price, title = best_match(candidates, "Cetaphil", query_words)
-    # brand never appears, but "moisturizing" overlaps -- weak fallback, not nothing
-    assert price == 11.49
+    assert price is None
+    assert title is None
 
 
 def test_best_match_returns_none_on_zero_overlap():

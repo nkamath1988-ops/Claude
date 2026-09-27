@@ -46,6 +46,21 @@ NON_TITLE_NEXT_LINES = {
     "with target circle",
     "clip coupon",
 }
+NON_TITLE_NEXT_LINE_PATTERNS = [
+    re.compile(r"^coupon:.*off$"),
+    re.compile(r"^\+\s*\d+\s*deals?$"),
+]
+# How many annotation lines can stack between a price and its title -- seen
+# up to 2 in practice ("Coupon: $2 off" then "+ 1 deal"); capped so this
+# can't wander arbitrarily far and grab an unrelated line as a fake title.
+MAX_ANNOTATION_LOOKAHEAD = 4
+
+
+def _is_annotation_line(line: str) -> bool:
+    lowered = line.lower()
+    if lowered in NON_TITLE_NEXT_LINES:
+        return True
+    return any(p.match(lowered) for p in NON_TITLE_NEXT_LINE_PATTERNS)
 
 
 @dataclass
@@ -97,13 +112,23 @@ def extract_price_title_pairs(body_text: str):
     for i, line in enumerate(lines):
         if not price_re.match(line):
             continue
-        if i + 1 >= len(lines):
-            continue
-        next_line = lines[i + 1]
-        if next_line.lower() in NON_TITLE_NEXT_LINES:
-            continue
-        price = float(line.replace("$", ""))
-        yield price, next_line
+
+        # Walk forward past any stacked annotation lines (coupon callouts,
+        # deal badges, subscription pricing notes) to find the real title.
+        # Bail without yielding if we hit another price first, or run out
+        # of lookahead -- better to skip a candidate than mis-pair it.
+        for offset in range(1, MAX_ANNOTATION_LOOKAHEAD + 1):
+            j = i + offset
+            if j >= len(lines):
+                break
+            candidate = lines[j]
+            if price_re.match(candidate):
+                break
+            if _is_annotation_line(candidate):
+                continue
+            price = float(line.replace("$", ""))
+            yield price, candidate
+            break
 
 
 def normalize(text: str) -> str:
@@ -139,13 +164,41 @@ def brand_token(brand: str) -> str:
 # for the query only; the original name still drives all display text.
 _PARENTHETICAL_RE = re.compile(r"\([^)]*\)")
 _TRAILING_DASH_RE = re.compile(r"\s+-\s+.*$")
+_PERCENTAGE_TOKEN_RE = re.compile(r"\b\d+(?:\.\d+)?%")
+_LONE_PLUS_RE = re.compile(r"(?<=\s)\+(?=\s)")
+
+
+def _strip_leading_stopword(brand: str) -> str:
+    """Drop a leading 'The'/'A'/'An'/'Dear' from a brand for query purposes.
+
+    Verified live: Target's own search reliably returns zero results for a
+    query starting with the literal word "The" (e.g. "The Ordinary
+    Niacinamide" -> "No results", "Ordinary Niacinamide" -> 40 results),
+    even though "The Ordinary" is a brand Target stocks and filters on
+    elsewhere in its UI. Root cause not fully explained (query-parsing quirk
+    on their end, possibly inconsistent), but the workaround is simple and
+    doesn't cost anything the brand-matching gate still needs -- brand_token()
+    handles the stopword separately for scoring purposes.
+    """
+    words = brand.split()
+    if words and words[0].lower() in BRAND_STOPWORDS:
+        return " ".join(words[1:]) or brand
+    return brand
 
 
 def derive_search_query(brand: str, name: str) -> str:
     cleaned = _PARENTHETICAL_RE.sub("", name)
     cleaned = _TRAILING_DASH_RE.sub("", cleaned)
+    # Ingredient percentages ("10% + Zinc 1%") confuse Target's search --
+    # verified live that dropping them turns "No results" into 30-40 real
+    # hits for the exact same product, with no loss of match quality since
+    # these tokens don't appear in retailers' own listing titles anyway.
+    cleaned = _PERCENTAGE_TOKEN_RE.sub("", cleaned)
+    cleaned = _LONE_PLUS_RE.sub("", cleaned)
     cleaned = " ".join(cleaned.split())
-    return f"{brand} {cleaned}".strip()
+
+    query_brand = _strip_leading_stopword(brand)
+    return f"{query_brand} {cleaned}".strip()
 
 
 def query_words_for(brand: str, name: str) -> list:
@@ -161,29 +214,30 @@ def score_title_match(query_words, title: str) -> int:
 def best_match(candidates, brand: str, query_words):
     """Pick the best (price, title) candidate for a given brand.
 
-    Prefers candidates whose title actually contains the brand name (the
-    common case); if none do -- e.g. the brand token got mangled by a
-    layout quirk -- falls back to the single strongest word-overlap match
-    rather than giving up outright, as long as it shares at least one real
-    word with the query (never return a match on zero overlap).
+    Requires the brand token to literally appear in the title -- no
+    fallback to word-overlap-only matches. An earlier version of this
+    function fell back to the best-overlapping candidate when nothing
+    contained the brand, meant to rescue cases where a layout quirk mangled
+    the pairing. Verified live that this was actively dangerous instead:
+    when Target doesn't rank a real "The Ordinary" listing for a search, it
+    shows competitor products (Naturium, La Roche Posay, Good Molecules)
+    with enough incidental word overlap ("niacinamide", "zinc") to pass the
+    old threshold, and the fallback reported their price as if it were The
+    Ordinary's. A wrong brand's price flowing into an alert or a video
+    script is worse than this dupe just not resolving this run -- so a
+    missing brand token is now a hard no-match, not a "best guess."
     """
     token = brand_token(brand)
-    branded, unbranded = [], []
-    for price, title in candidates:
-        score = score_title_match(query_words, title)
-        entry = (score, price, title)
-        if token and token in normalize(title).split():
-            branded.append(entry)
-        else:
-            unbranded.append(entry)
+    if not token:
+        return None, None
 
-    if branded:
-        best = max(branded, key=lambda e: e[0])
-        return best[1], best[2]
+    branded = [
+        (score_title_match(query_words, title), price, title)
+        for price, title in candidates
+        if token in normalize(title).split()
+    ]
+    if not branded:
+        return None, None
 
-    if unbranded:
-        best = max(unbranded, key=lambda e: e[0])
-        if best[0] >= 1:
-            return best[1], best[2]
-
-    return None, None
+    best = max(branded, key=lambda e: e[0])
+    return best[1], best[2]
