@@ -76,7 +76,12 @@ def load_rth(path: str, bar_minutes: int = 10) -> pd.DataFrame:
     """Read a cached intraday CSV, convert to US/Eastern, keep regular-hours bars only
     (last bar starts at 16:00 - bar_minutes) and drop flat o=h=l=c prints (post-close /
     early-close filler). Adds `day` (session ordinal), `date` and `hhmm`."""
-    df = pd.read_csv(path, parse_dates=["ts"]).drop_duplicates("ts").sort_values("ts")
+    return prepare_rth(pd.read_csv(path, parse_dates=["ts"]), bar_minutes)
+
+
+def prepare_rth(df: pd.DataFrame, bar_minutes: int = 10) -> pd.DataFrame:
+    """DataFrame form of `load_rth` (columns ts[UTC], open, high, low, close)."""
+    df = df.drop_duplicates("ts").sort_values("ts").copy()
     df["et"] = df["ts"].dt.tz_convert("America/New_York")
     df["hhmm"] = df["et"].dt.strftime("%H:%M")
     last = f"{(960 - bar_minutes) // 60:02d}:{(960 - bar_minutes) % 60:02d}"
@@ -248,7 +253,7 @@ def simulate(df: pd.DataFrame, signals: list[Signal], p: IctParams, target_mode:
             tgt = entry + s.side * float(target_mode[2:]) * risk
         x, exit_px, reason = walk_trade(o, h, l, c, day, e, s.side, stop, tgt)
         pts = (exit_px - entry) * s.side - p.cost_pts
-        trades.append(dict(entry_time=df["et"].iat[e], side="long" if s.side == 1 else "short",
+        trades.append(dict(entry_time=df["et"].iat[e], exit_time=df["et"].iat[x], side="long" if s.side == 1 else "short",
                            entry=entry, stop=stop, target=tgt, exit=exit_px, exit_reason=reason,
                            bars_held=x - e + 1, risk=risk, gap=s.gap_size, pts=pts, r=pts / risk,
                            swept=s.swept_level))

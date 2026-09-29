@@ -609,6 +609,26 @@ scaling was fixed before looking at 5m results. Data check vs the daily file: hi
 Not tested: 1-minute execution (a 9-pt gap is a bigger structure on 10m/5m than on 1m), pre-market/overnight liquidity (RTH data only), and any
 out-of-sample period beyond the two years above.
 
+## Forward paper trading: ICT SPX setup (5m), signal alerts, no orders
+
+`trading_bot/paper_trading/ict_engine.py` + `python -m trading_bot.ict_paper_cli` (state:
+`paper_trading_state/ict_spx_5m.json`, bootstrapped 2026-09-29 23:42Z; nothing before that is counted).
+Places **no orders**. Two frozen variants run side by side: `spec9` (the 9-pt gap asked for) and `gap15`
+(the 15-pt cut-off - exploratory, chosen after seeing backtest results, so only fresh forward trades can
+validate it). Each run replays the exact backtest detector on the last ~4 days of 5m bars and reports each new
+signal and each paper exit exactly once (stable event ids). Checked: hourly rolling replays over
+Apr-Jul 2025 (2,297 runs) reproduce the batch backtest trade-for-trade, no duplicate events
+(`tests/test_ict_paper.py`).
+
+Scheduled as a routine, weekdays at :03 past each UTC hour 14-21 (covers EDT and EST sessions). The routine
+fetches the bars through Robinhood `get_index_historicals` (only reachable from an agent session), runs the CLI,
+pushes one notification per `NOTIFY` line and commits the state on events / at the last run of the day.
+**Limits**: the scheduler's minimum interval is 1 hour, so an alert can be up to ~1h after the signal bar (paper
+fills are simulated from bar data and are unaffected; a human could not have acted on a 1h-old 5m signal);
+the routine only runs while the hosting session/environment is reachable; SPX is an index - there is no direct
+execution, and the evidence for the setup is weak (see above), so the graduation bar is >= 30 closed forward
+trades before anyone considers money, and execution safety (sizing, loss caps, kill switch) does not exist.
+
 ## Usage
 
 ```

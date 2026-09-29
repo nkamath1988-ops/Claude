@@ -1,0 +1,24 @@
+{
+  "bar_minutes": 5,
+  "last_bar_ts": "2026-09-29T19:55:00Z",
+  "open": {
+    "gap15": null,
+    "spec9": null
+  },
+  "reported": [],
+  "runs": 2,
+  "start_ts": "2026-09-29T23:42:20Z",
+  "trades": {
+    "gap15": [],
+    "spec9": []
+  },
+  "variants": {
+    "gap15": {
+      "min_gap": 15.0
+    },
+    "spec9": {
+      "min_gap": 9.0
+    }
+  },
+  "version": 1
+}
