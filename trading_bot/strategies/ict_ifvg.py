@@ -33,7 +33,6 @@ import numpy as np
 import pandas as pd
 
 RTH_START = "09:30"
-RTH_LAST_BAR = "15:50"  # 10-minute bars, left-edge labelled
 
 
 @dataclass
@@ -52,6 +51,13 @@ class IctParams:
     earliest: str = "09:50"      # no entries before this ET bar-start
     latest: str = "15:00"        # no entries after this ET bar-start
     max_trades_per_day: int = 2
+    disp_lookback: int = 20      # bars in the average-range baseline for displacement
+
+    def scaled(self, k: int) -> "IctParams":
+        """Same clock-time behaviour on bars k times shorter (bar-count params x k)."""
+        from dataclasses import replace
+        return replace(self, swing_len=self.swing_len * k, sweep_window=self.sweep_window * k,
+                       gap_lookback=self.gap_lookback * k, disp_lookback=self.disp_lookback * k)
 
 
 @dataclass
@@ -66,13 +72,16 @@ class Signal:
     target_pools: list = field(default_factory=list)  # opposing pool levels known at idx (original price space)
 
 
-def load_rth(path: str) -> pd.DataFrame:
-    """Read the cached 10m CSV, convert to US/Eastern, keep regular-hours bars only
-    (drops the flat post-close prints) and add `day` (session ordinal) and `hhmm`."""
+def load_rth(path: str, bar_minutes: int = 10) -> pd.DataFrame:
+    """Read a cached intraday CSV, convert to US/Eastern, keep regular-hours bars only
+    (last bar starts at 16:00 - bar_minutes) and drop flat o=h=l=c prints (post-close /
+    early-close filler). Adds `day` (session ordinal), `date` and `hhmm`."""
     df = pd.read_csv(path, parse_dates=["ts"]).drop_duplicates("ts").sort_values("ts")
     df["et"] = df["ts"].dt.tz_convert("America/New_York")
     df["hhmm"] = df["et"].dt.strftime("%H:%M")
-    df = df[(df.hhmm >= RTH_START) & (df.hhmm <= RTH_LAST_BAR)].copy()
+    last = f"{(960 - bar_minutes) // 60:02d}:{(960 - bar_minutes) % 60:02d}"
+    flat = (df.open == df.high) & (df.high == df.low) & (df.low == df.close)
+    df = df[(df.hhmm >= RTH_START) & (df.hhmm <= last) & ~flat].copy()
     df["date"] = df["et"].dt.date
     df["day"] = df["date"].rank(method="dense").astype(int) - 1
     return df.reset_index(drop=True)
@@ -147,7 +156,7 @@ def _long_signals(o, h, l, c, day, hhmm, p: IctParams) -> list[Signal]:
                     if c[b] > top and (best is None or size > best[0]):
                         best = (size, top, h[g])
                 if best is not None:
-                    prior = rng[max(0, b - 20):b]
+                    prior = rng[max(0, b - p.disp_lookback):b]
                     body = abs(c[b] - o[b])
                     disp = (rng[b] > 0 and body / rng[b] >= p.disp_body_frac
                             and rng[b] >= p.disp_range_mult * prior.mean())

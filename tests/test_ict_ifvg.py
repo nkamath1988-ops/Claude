@@ -72,3 +72,17 @@ def test_simulate_stop_checked_before_target_in_same_bar():
     l = list(L); l[11] = 92  # entry bar trades down through the 93 stop and up through the target
     t = _sim(_df(O, H, l, C), "rr0.5")
     assert t.exit_reason.iat[0] == "stop" and t.exit.iat[0] == 93 and abs(t.r.iat[0] + 1.0) < 1e-9
+
+
+def test_load_rth_is_timeframe_aware_and_drops_flat_prints(tmp_path):
+    from trading_bot.strategies.ict_ifvg import load_rth
+    # 2025-01-06 (EST): RTH = 14:30Z..20:55Z start times for 5m bars; 21:00Z is the flat post-close print
+    ts = pd.date_range("2025-01-06 14:25", "2025-01-06 21:05", freq="5min", tz="UTC")
+    px = np.arange(len(ts), dtype=float) + 5000
+    df = pd.DataFrame({"ts": ts, "open": px, "high": px + 1, "low": px - 1, "close": px + 0.5})
+    df.loc[df.ts == pd.Timestamp("2025-01-06 21:00", tz="UTC"), ["open", "high", "low", "close"]] = 5100.0  # flat
+    p = tmp_path / "x.csv"; df.to_csv(p, index=False)
+    b5, b10 = load_rth(str(p), 5), load_rth(str(p), 10)
+    assert b5.hhmm.iloc[0] == "09:30" and b5.hhmm.iloc[-1] == "15:55" and len(b5) == 78
+    assert b10.hhmm.iloc[-1] == "15:50"
+    assert IctParams().scaled(2).swing_len == 10 and IctParams().scaled(2).sweep_window == 24

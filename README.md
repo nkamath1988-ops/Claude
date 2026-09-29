@@ -580,8 +580,33 @@ bar-count cap (~1500 bars/call) forces 10-day windows.
 - Cost: avg R falls to +0.10 at 2 pts round trip. SPX is not directly tradable; ES/MES fills, and
   gaps through stops, are not modelled beyond a fixed cost.
 
-Not tested: 1m/5m execution timeframes (10-minute is the coarsest the FVG logic is usually run on; a 9-pt gap is
-a *bigger* structure here than on a 1-5m chart), pre-market/overnight liquidity (RTH data only), and any
+### 5-minute rerun (same rules; bar-count windows doubled to keep the same clock time)
+
+`python -m trading_bot.ict_ifvg_cli --data data_cache_ict/SPX_5m.csv --bar-minutes 5` on 494 sessions
+(2024-10-07 -> 2026-09-25, `SPX_5m.csv`; 5-minute bars had to be pulled in 4.5-day windows, ~100 calls).
+Swing length / sweep window / lookbacks are scaled x2 so the pools and windows cover the same time as at 10m; that
+scaling was fixed before looking at 5m results. Data check vs the daily file: high/low error std 0.15/0.20 pt.
+
+| | n | win | avg R | total pts | PF |
+|---|---|---|---|---|---|
+| 5m all | 33 | 48% | +0.13 | +177 | 1.66 |
+| 5m long / short | 16 / 17 | 62% / 35% | +0.30 / -0.03 | +119 / +58 | |
+| 10m all (above) | 37 | 54% | +0.18 | +160 | 1.60 |
+| 10m long / short | 19 / 18 | 47% / 61% | -0.02 / +0.39 | +22 / +138 | |
+
+- **Not confirmed, and the long/short split flipped.** At 10m the edge was all shorts, at 5m it is all longs. On the
+  same market and period, an edge that changes side with the bar size is noise, not a feature of the setup.
+- 5m bootstrap 95% CI on mean R: **[-0.30, +0.59]**; random-entry control p ~ **0.22** (10m: 0.10).
+- **Worse concentration**: the top 3 trades are +188 pts against a +177 total, so the other 30 net **-11 pts**
+  (mean R without them -0.13). Year 1 (Oct24-Sep25) +0.51 R (n=14); Year 2 (Oct25-Sep26) **-0.14 R** (n=19).
+- Stop beyond the sweep extreme now gives +0.07 R (27 trades) instead of -0.05: same sign-flip fragility.
+- The one pattern that reproduced: bigger minimum gap = better. 5m avg R by min gap: 3: +0.10, 5: +0.20, 7: +0.15,
+  9: +0.13, 12: +0.58 (n=17), 15: +0.90 (n=13, 77% win). Same direction as 10m (+0.36, n=11 at 15 pts).
+  But these are the same market days (31 vs 36 trade-days, 15 shared), so this is one observation seen twice,
+  not two independent confirmations; the 12/15-pt cut-offs are picked after the fact; and n=13-17.
+  The 9-pt spec you asked for sits in the weakest part of that curve.
+
+Not tested: 1-minute execution (a 9-pt gap is a bigger structure on 10m/5m than on 1m), pre-market/overnight liquidity (RTH data only), and any
 out-of-sample period beyond the two years above.
 
 ## Usage

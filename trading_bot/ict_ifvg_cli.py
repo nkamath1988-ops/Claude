@@ -13,6 +13,7 @@ Example:
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
@@ -77,22 +78,27 @@ def random_entry_control(df: pd.DataFrame, trades: pd.DataFrame, p: IctParams, d
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--data", default="data_cache_ict/SPX_10m.csv")
+    ap.add_argument("--bar-minutes", type=int, default=10)
+    ap.add_argument("--naive-bars", action="store_true", help="do NOT scale bar-count params to the bar size")
     ap.add_argument("--out-dir", default="reports_out_ict")
     ap.add_argument("--draws", type=int, default=2000)
     a = ap.parse_args()
-    out = Path(a.out_dir)
+    out = Path(a.out_dir); tag = f"{a.bar_minutes}m"
     out.mkdir(exist_ok=True)
 
-    df = load_rth(a.data)
-    print(f"SPX 10m RTH bars: {len(df)}  sessions: {df.date.nunique()}  {df.date.min()} -> {df.date.max()}\n")
+    df = load_rth(a.data, a.bar_minutes)
+    print(f"SPX {a.bar_minutes}m RTH bars: {len(df)}  sessions: {df.date.nunique()}  {df.date.min()} -> {df.date.max()}\n")
 
-    p = IctParams()
+    base = IctParams()
+    if a.bar_minutes != 10 and not a.naive_bars:
+        base = base.scaled(10 // a.bar_minutes)  # keep the same clock-time windows as the 10m baseline
+    p = base
     sigs = find_signals(df, p)
-    print(f"PRIMARY  min_gap={p.min_gap} swing_len={p.swing_len} stop=beyond inverted gap "
+    print(f"PRIMARY  min_gap={p.min_gap} swing_len={p.swing_len} sweep_window={p.sweep_window} stop=beyond inverted gap "
           f"max_risk={p.max_risk} target=nearest opposing liquidity (>= {p.min_rr}R) cost={p.cost_pts}pt")
     print(f"raw signals: {len(sigs)}  ({sum(s.side == 1 for s in sigs)} long / {sum(s.side == -1 for s in sigs)} short)")
     t = simulate(df, sigs, p, "liquidity")
-    t.to_csv(out / "primary_trades.csv", index=False)
+    t.to_csv(out / f"primary_trades_{tag}.csv", index=False)
     print("ALL   ", fmt(stats(t)))
     for sd in ("long", "short"):
         print(f"{sd:<6}", fmt(stats(t[t.side == sd])))
@@ -119,22 +125,22 @@ def main() -> None:
 
     print("\nStop definition:")
     for sm, mr in (("gap", 30.0), ("gap", 150.0), ("sweep", 150.0)):
-        q = IctParams(stop_mode=sm, max_risk=mr)
+        q = replace(base, stop_mode=sm, max_risk=mr)
         print(f"  stop={sm:<5} max_risk={mr:>5.0f} liquidity:", fmt(stats(simulate(df, find_signals(df, q), q, "liquidity"))))
 
     print("\nSensitivity to minimum FVG size (liquidity target, gap stop):")
     for g in (3, 5, 7, 9, 12, 15):
-        q = IctParams(min_gap=float(g))
+        q = replace(base, min_gap=float(g))
         s2 = find_signals(df, q)
         print(f"  min_gap={g:>2} signals={len(s2):>3}", fmt(stats(simulate(df, s2, q, "liquidity"))))
     print("\nSensitivity to swing length (pool definition):")
     for k in (3, 5, 8):
-        q = IctParams(swing_len=k)
+        q = replace(base, swing_len=k * (10 // a.bar_minutes if not a.naive_bars else 1))
         s2 = find_signals(df, q)
-        print(f"  swing_len={k} signals={len(s2):>3}", fmt(stats(simulate(df, s2, q, "liquidity"))))
+        print(f"  swing_len={q.swing_len} bars signals={len(s2):>3}", fmt(stats(simulate(df, s2, q, "liquidity"))))
     print("\nCost sensitivity (round-trip points):")
     for cst in (0.0, 0.5, 1.0, 2.0):
-        q = IctParams(cost_pts=cst)
+        q = replace(base, cost_pts=cst)
         print(f"  cost={cst:<4}", fmt(stats(simulate(df, find_signals(df, q), q, "liquidity"))))
 
 
