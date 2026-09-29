@@ -526,6 +526,64 @@ market needs its own out-of-sample test, and for SPX/Russell 2000 specifically,
 the honest answer to "what's a profitable strategy" is still buy-and-hold,
 by a wide margin, over this decade-plus window.
 
+## ICT setup on SPX: liquidity sweep -> delivery -> inverse FVG (9+ pts) -> liquidity target
+
+`python -m trading_bot.ict_ifvg_cli` (logic in `trading_bot/strategies/ict_ifvg.py`, 8 unit tests in
+`tests/test_ict_ifvg.py`). The request named the concepts, not the rules, so the definitions below are this
+repo's explicit interpretation - change them in the module docstring/`IctParams`, not by eye.
+
+**Rules (all evaluated bar-by-bar, no lookahead; shorts are the exact price-mirror of longs):**
+1. *Liquidity pool*: previous-session high/low, plus unswept fractal swing highs/lows (5 bars each side,
+   usable only once confirmed).
+2. *Sweep*: a bar trades through a sell-side pool (for a long).
+3. *Inverse FVG*: a bearish 3-bar gap of **>= 9 index points** that formed in the leg into the sweep low is
+   closed through by a bar close above its top (first time only).
+4. *Delivery*: that bar is a displacement bar (body >= 50% of range, range >= mean of prior 20 bars) and
+   closes back above the swept pool.
+5. Enter next bar's open. Stop just beyond the inverted gap's far edge. Target: nearest unswept opposing
+   pool at least 1R away (previous-day extreme / session extreme / swing). Flat at the session close.
+   Max 2 trades/day, one at a time, 9:50-15:00 ET entries, 0.5 pt round-trip cost, stop assumed hit
+   before target when both are inside one bar.
+
+**Data**: 495 regular-session days, 2024-10-07 -> 2026-09-28, 10-minute SPX index bars from
+`get_index_historicals` (`data_cache_ict/SPX_10m.csv`). Interpolated filler bars were dropped. Checked
+against the independent `SPX_daily.csv`: 494/495 sessions matched (high std 0.18 pt, close std 1.6 pt).
+Two data traps found on the way: the 10-minute endpoint returns *all-interpolated* (fake) bars for
+2026-03-30 -> 2026-07-01 while 5-minute is real, so that window was rebuilt from 5-minute bars; and the
+bar-count cap (~1500 bars/call) forces 10-day windows.
+
+**Result (primary spec, fixed before looking at P&L except the stop change below):**
+
+| | n | win | avg R | total pts | PF | max DD |
+|---|---|---|---|---|---|
+| All | 37 | 54% | +0.18 | +160 | 1.60 | 77 pts |
+| Long | 19 | 47% | -0.02 | +22 | 1.14 | |
+| Short | 18 | 61% | +0.39 | +138 | 2.25 | |
+
+**Why this is not evidence of an edge:**
+- 37 trades in two years. Bootstrap 95% CI on mean R is **[-0.17, +0.51]**.
+- Random-entry control (same side / stop / target distance, random timing, 2000 draws): mean R -0.02;
+  the real +0.18 beats 89.5% of draws, **p ~ 0.10** - suggestive, not significant, and this is one of
+  ~25 configurations looked at.
+- **Concentrated**: the top 3 trades (+55, +33, +31 pts) are 75% of the profit. Without them: +40 pts; without
+  the top 5: -18 pts.
+- **Stop-definition dependent**: with the stop beyond the *sweep* extreme instead (the other natural reading),
+  27 trades, avg R -0.05, -37 pts. The gap-edge stop was adopted after the sweep stop produced only 3-4
+  trades under a 30-pt risk cap (risk is typically 25-100 pts there) - a choice made on trade count, but both
+  variants had been seen when it was made.
+- **Long side has no edge** (-0.02 R); everything comes from shorts, which in a market that rose ~35% over the
+  window is more likely a sample quirk than a structural feature.
+- Target: only 30% of trades reach the liquidity target, 35% stop out, 35% end flat at the close. Fixed 1R/2R/3R
+  targets give similar avg R (+0.21/+0.16/+0.17), so "liquidity targeting" adds nothing measurable.
+- Larger minimum gap looked monotonically better (avg R +0.04 at 3 pts, 0.00 at 5, +0.13 at 7, +0.18 at 9,
+  +0.36 at 15 with n=11), the one pattern that agrees with the ICT premise - but also shrinking samples.
+- Cost: avg R falls to +0.10 at 2 pts round trip. SPX is not directly tradable; ES/MES fills, and
+  gaps through stops, are not modelled beyond a fixed cost.
+
+Not tested: 1m/5m execution timeframes (10-minute is the coarsest the FVG logic is usually run on; a 9-pt gap is
+a *bigger* structure here than on a 1-5m chart), pre-market/overnight liquidity (RTH data only), and any
+out-of-sample period beyond the two years above.
+
 ## Usage
 
 ```
