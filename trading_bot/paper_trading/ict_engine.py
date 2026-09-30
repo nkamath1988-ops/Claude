@@ -16,7 +16,7 @@ uses (`strategies/ict_ifvg.py`), and diffs the result against the JSON state:
   never reports twice. `tests/test_ict_paper.py` checks that hourly rolling runs reproduce the
   batch backtest trade-for-trade.
 
-Two variants run side by side, both frozen at creation: `spec9` (the 9-point gap that was
+Two variants run side by side, both frozen at creation (`state['notify']` picks which ones raise events; the rest are tracked silently): `spec9` (the 9-point gap that was
 asked for) and `gap15` (the exploratory 15-point cut-off, chosen after seeing backtest results,
 so it is labelled as such -- only fresh forward trades can validate it).
 """
@@ -76,7 +76,7 @@ def newest_tool_result(pattern: str) -> str | None:
 def new_state(start_ts: str) -> dict:
     return {"version": 1, "start_ts": start_ts, "bar_minutes": BAR_MINUTES,
             "variants": {k: {"min_gap": v} for k, v in VARIANTS.items()},
-            "last_bar_ts": None, "trades": {k: [] for k in VARIANTS},
+            "notify": list(VARIANTS), "last_bar_ts": None, "trades": {k: [] for k in VARIANTS},
             "open": {k: None for k in VARIANTS}, "reported": [], "runs": 0}
 
 
@@ -146,10 +146,13 @@ def advance(state: dict, bars: pd.DataFrame) -> list[dict]:
     reported = set(state["reported"])
     events: list[dict] = []
 
+    notify = set(state.get("notify", VARIANTS))   # silent variants are still tracked, just never reported
+
     def emit(eid: str, ev: dict) -> None:
         if eid not in reported:
             reported.add(eid)
-            events.append({"id": eid, **ev})
+            if ev["variant"] in notify:
+                events.append({"id": eid, **ev})
 
     for name, gap in VARIANTS.items():
         p = replace(BASE, min_gap=gap)

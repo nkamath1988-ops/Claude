@@ -613,7 +613,7 @@ out-of-sample period beyond the two years above.
 
 `trading_bot/paper_trading/ict_engine.py` + `python -m trading_bot.ict_paper_cli` (state:
 `paper_trading_state/ict_spx_5m.json`, bootstrapped 2026-09-29 23:42Z; nothing before that is counted).
-Places **no orders**. Two frozen variants run side by side: `spec9` (the 9-pt gap asked for) and `gap15`
+Places **no orders**. Two frozen variants run side by side (2026-09-30: only `gap15` alerts the user, `state['notify']=['gap15']`; `spec9` is tracked silently for comparison): `spec9` (the 9-pt gap asked for) and `gap15`
 (the 15-pt cut-off - exploratory, chosen after seeing backtest results, so only fresh forward trades can
 validate it). Each run replays the exact backtest detector on the last ~4 days of 5m bars and reports each new
 signal and each paper exit exactly once (stable event ids). Checked: hourly rolling replays over

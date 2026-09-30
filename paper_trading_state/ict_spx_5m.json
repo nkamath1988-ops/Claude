@@ -1,6 +1,9 @@
 {
   "bar_minutes": 5,
   "last_bar_ts": "2026-09-29T19:55:00Z",
+  "notify": [
+    "gap15"
+  ],
   "open": {
     "gap15": null,
     "spec9": null

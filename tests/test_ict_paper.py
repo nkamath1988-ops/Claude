@@ -52,3 +52,20 @@ def test_format_event_fits_a_push_notification():
     ev = dict(type="SIGNAL", variant="spec9", status="pending", side="short", ref_price=7000.12, stop=7021.5,
               target=6960.0, gap=11.2, swept=7005.0)
     assert len(format_event(ev)) < 200 and "SHORT" in format_event(ev)
+
+
+def test_silent_variants_are_tracked_but_never_reported():
+    raw = pd.read_csv(DATA, parse_dates=["ts"])
+    lo, hi = pd.Timestamp("2025-05-12", tz="UTC"), pd.Timestamp("2025-06-06", tz="UTC")  # has 15pt AND 9pt trades
+    loud, quiet = new_state(lo.strftime("%Y-%m-%dT%H:%M:%SZ")), new_state(lo.strftime("%Y-%m-%dT%H:%M:%SZ"))
+    quiet["notify"] = ["gap15"]
+    ev_loud, ev_quiet = [], []
+    for t in pd.date_range(lo, hi, freq="6h"):
+        w = raw[(raw.ts > t - pd.Timedelta(days=4.4)) & (raw.ts <= t)]
+        if len(w) and prepare_rth(w, 5).date.nunique() >= 3:
+            ev_loud += advance(loud, w)
+            ev_quiet += advance(quiet, w)
+    assert {e["variant"] for e in ev_loud} == {"spec9", "gap15"}
+    assert {e["variant"] for e in ev_quiet} == {"gap15"}                     # still alerts on the chosen variant
+    assert [e["id"] for e in ev_quiet] == [e["id"] for e in ev_loud if e["variant"] == "gap15"]
+    assert quiet["trades"]["spec9"] == loud["trades"]["spec9"] and quiet["trades"]["spec9"]  # silently logged
