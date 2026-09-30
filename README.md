@@ -623,6 +623,14 @@ Apr-Jul 2025 (2,297 runs) reproduce the batch backtest trade-for-trade, no dupli
 Scheduled as a routine, weekdays at :03 past each UTC hour 14-21 (covers EDT and EST sessions). The routine
 fetches the bars through Robinhood `get_index_historicals` (only reachable from an agent session), runs the CLI,
 pushes one notification per `NOTIFY` line and commits the state on events / at the last run of the day.
+**Robinhood alerts**: Robinhood cannot send free-text messages and cannot alert on the SPX index, so on each
+signal the routine also creates two SPY price alerts (stop and target; SPX level converted at the live SPY/SPX
+ratio, ~0.0996 - not 1/10, which would be ~23 SPX points off) that push through the Robinhood app, and pauses
+them when the paper trade exits. Guardrails: SPY only, price_above/price_below only, max 6 active routine
+alerts, never deletes, never touches your other alerts. Ledger: `paper_trading_state/ict_spx_robinhood_alerts.json`
+(`trading_bot/ict_alerts_cli.py`, `tests/test_ict_alerts.py`). These alerts tell you when a paper trade *would*
+have exited; the signal itself still arrives via the session push notification.
+
 **Limits**: the scheduler's minimum interval is 1 hour, so an alert can be up to ~1h after the signal bar (paper
 fills are simulated from bar data and are unaffected; a human could not have acted on a 1h-old 5m signal);
 the routine only runs while the hosting session/environment is reachable; SPX is an index - there is no direct
