@@ -4,7 +4,7 @@
   "max_concurrent": 8,
   "max_holding_days": 20,
   "cost_rate": 0.00075,
-  "cash": 1960.7940069847914,
+  "cash": 1859.3017208680026,
   "open_positions": [
     {
       "symbol": "STNG",
@@ -13,16 +13,7 @@
       "stop_price": 76.90455317229925,
       "target_price": 89.07089365540149,
       "allocated_capital": 1000.0,
-      "days_held": 3
-    },
-    {
-      "symbol": "BKSY",
-      "entry_date": "2026-09-25",
-      "entry_price": 23.17,
-      "stop_price": 20.853178730674006,
-      "target_price": 27.803642538651992,
-      "allocated_capital": 1000.0,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "symbol": "OHI",
@@ -31,7 +22,7 @@
       "stop_price": 45.03087511385846,
       "target_price": 48.92824977228308,
       "allocated_capital": 1000.0,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "symbol": "TARS",
@@ -40,7 +31,7 @@
       "stop_price": 71.22138168892185,
       "target_price": 85.43723662215629,
       "allocated_capital": 1000.0,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "symbol": "NVMI",
@@ -49,7 +40,7 @@
       "stop_price": 342.6938378626785,
       "target_price": 415.01232427464305,
       "allocated_capital": 1000.0,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "symbol": "VOD",
@@ -58,7 +49,7 @@
       "stop_price": 16.00121101330295,
       "target_price": 17.467577973394096,
       "allocated_capital": 1000.0,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "symbol": "HPQ",
@@ -67,7 +58,7 @@
       "stop_price": 28.710219794286687,
       "target_price": 35.99956041142663,
       "allocated_capital": 1000.0,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "symbol": "AMSC",
@@ -76,7 +67,16 @@
       "stop_price": 27.12252911595077,
       "target_price": 33.26494176809847,
       "allocated_capital": 1000.0,
-      "days_held": 1
+      "days_held": 2
+    },
+    {
+      "symbol": "FIVE",
+      "entry_date": "2026-10-02",
+      "entry_price": 221.17,
+      "stop_price": 206.98925824426254,
+      "target_price": 249.5314835114749,
+      "allocated_capital": 1000.0,
+      "days_held": 0
     }
   ],
   "closed_trades": [
@@ -93,7 +93,21 @@
       "exit_reason": "stop_loss",
       "pnl_pct": -0.039205993015208385,
       "proceeds": 960.7940069847915
+    },
+    {
+      "symbol": "BKSY",
+      "entry_date": "2026-09-25",
+      "entry_price": 23.17,
+      "stop_price": 20.853178730674006,
+      "target_price": 27.803642538651992,
+      "allocated_capital": 1000.0,
+      "days_held": 4,
+      "exit_date": "2026-10-02",
+      "exit_price": 20.853178730674006,
+      "exit_reason": "stop_loss",
+      "pnl_pct": -0.10149228611678879,
+      "proceeds": 898.5077138832112
     }
   ],
-  "last_run_date": "2026-10-01"
+  "last_run_date": "2026-10-02"
 }
