@@ -3,3 +3,4 @@ __pycache__/
 data_cache/*.csv
 reports_out*/
 .pytest_cache/
+instagram/frames/
