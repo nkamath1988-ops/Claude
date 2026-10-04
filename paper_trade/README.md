@@ -12,7 +12,7 @@ The paper trade is a **simulation** on that day's 1-minute bars. It is not a bro
 - Cost: $0.01 per share per side on every trade (spread/slippage allowance), no commission.
 
 ## Pass criteria (set before the test, per symbol)
-- At least 21 completed sessions AND about 250 trades.
+- At least 21 completed sessions AND about 250 trades. The runner stops logging after 21 sessions per symbol.
 - Average net P&L per trade (bp) > 0 with the lower end of the 95% CI (mean +/- 1.96 SE) above 0.
 - Profit factor >= 1.2.
 - If the CI straddles zero the result is **inconclusive, not a pass**. Win rate alone is not a criterion:

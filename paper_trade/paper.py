@@ -14,6 +14,7 @@ SESSIONS = os.path.join(HERE, "sessions.csv")
 SYMS = ["SPY", "QQQ"]
 P = dict(hull_len=70, don_len=20, atr_len=14, stop_atr=3.0, tp_atr=1.5, cost_per_side=0.01)
 START_DATE = os.environ.get("PAPER_START", "2026-10-05")
+MAX_SESSIONS = 21   # the test ends after this many completed sessions per symbol
 WARMUP_DAYS = int(os.environ.get("PAPER_WARMUP_DAYS", "2"))
 OFFLINE = os.environ.get("PAPER_OFFLINE_DIR")
 
@@ -104,7 +105,8 @@ def run_symbol(sym):
     done = set()
     if os.path.exists(SESSIONS):
         s = pd.read_csv(SESSIONS); done = set(zip(s.date.astype(str), s.symbol))
-    new_days = [str(d) for k, d in enumerate(days) if k >= WARMUP_DAYS and str(d) >= START_DATE and (str(d), sym) not in done]
+    room = MAX_SESSIONS - sum(1 for d, y in done if y == sym)
+    new_days = [str(d) for k, d in enumerate(days) if k >= WARMUP_DAYS and str(d) >= START_DATE and (str(d), sym) not in done][:max(room, 0)]
     if not new_days: return [], []
     trades = [t for t in simulate(df) if str(t["exit_time"].date()) in new_days]
     rows = []
@@ -155,6 +157,10 @@ def main():
             if not s: out.append(f"{sym}: {nd} sessions, too few trades"); continue
             out.append(f"{sym}: {nd} sessions, {s['n']} trades | win {s['win']:.0f}% avg win {s['avg_win']:+.1f}bp avg loss {s['avg_loss']:+.1f}bp "
                        f"| expectancy {s['exp']:+.2f}bp (95% CI {s['lo']:+.2f} to {s['hi']:+.2f}, t={s['t']:.2f}) | PF {s['pf']:.2f} | maxDD {s['dd']:.1f}%")
+    if os.path.exists(SESSIONS):
+        ss = pd.read_csv(SESSIONS)
+        if all(ss[ss.symbol == y].date.nunique() >= MAX_SESSIONS for y in SYMS):
+            out.append(f"\nTEST COMPLETE: {MAX_SESSIONS} sessions logged for every symbol. Write the final verdict against README.md.")
     text = "\n".join(out); print(text)
     open(os.path.join(HERE, "report_latest.txt"), "w").write(text + "\n")
 
