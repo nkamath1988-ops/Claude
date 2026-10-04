@@ -12,6 +12,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TRADES = os.path.join(HERE, "trades.csv")
 SESSIONS = os.path.join(HERE, "sessions.csv")
 SYMS = ["SPY", "QQQ"]
+VARIANTS = {"stop3": 3.0, "nostop": None}   # both are simulated every session
+SWITCH_AFTER = 15   # official paper account: 3 ATR stop for sessions 1-15, no stop from session 16 on
 P = dict(hull_len=70, don_len=20, atr_len=14, stop_atr=3.0, tp_atr=1.5, cost_per_side=0.01)
 START_DATE = os.environ.get("PAPER_START", "2026-10-05")
 MAX_SESSIONS = 21   # the test ends after this many completed sessions per symbol
@@ -58,7 +60,7 @@ def signals(df):
     trp = np.r_[0, tr[:-1]]
     return (tr == 1) & (trp == 1) & up, (tr == -1) & (trp == -1) & dn, up, dn   # long, short, hull_up, hull_dn
 
-def simulate(df):
+def simulate(df, stop_mult):
     O = df.o.values; H = df.h.values; Lw = df.l.values; C = df.c.values; idx = df.index; day = idx.date
     A = atr(df, P["atr_len"]); L, S, hu, hd = signals(df)
     st = dict(pos=0, ent=0.0, ent_i=0, stop=0.0, tp=0.0, blocked=False); out = []
@@ -83,7 +85,8 @@ def simulate(df):
             st["pos"] = want
             if want:
                 st["ent"] = O[i]; st["ent_i"] = i
-                st["stop"] = O[i] - want * P["stop_atr"] * A[i - 1]; st["tp"] = O[i] + want * P["tp_atr"] * A[i - 1]
+                st["stop"] = (O[i] - want * stop_mult * A[i - 1]) if stop_mult else -want * np.inf
+                st["tp"] = O[i] + want * P["tp_atr"] * A[i - 1]
         pos = st["pos"]
         if pos != 0:                                        # stop first if both inside the same bar (conservative)
             hit_s = (pos == 1 and Lw[i] <= st["stop"]) or (pos == -1 and H[i] >= st["stop"])
@@ -108,12 +111,12 @@ def run_symbol(sym):
     room = MAX_SESSIONS - sum(1 for d, y in done if y == sym)
     new_days = [str(d) for k, d in enumerate(days) if k >= WARMUP_DAYS and str(d) >= START_DATE and (str(d), sym) not in done][:max(room, 0)]
     if not new_days: return [], []
-    trades = [t for t in simulate(df) if str(t["exit_time"].date()) in new_days]
+    trades = [dict(t, variant=v) for v, m in VARIANTS.items() for t in simulate(df, m) if str(t["exit_time"].date()) in new_days]
     rows = []
     for t in trades:
         gross = t["side"] * (t["exit"] - t["entry"]) / t["entry"] * 1e4
         net = gross - 2 * P["cost_per_side"] / t["entry"] * 1e4
-        rows.append(dict(date=str(t["exit_time"].date()), symbol=sym, side="long" if t["side"] == 1 else "short",
+        rows.append(dict(date=str(t["exit_time"].date()), symbol=sym, variant=t["variant"], side="long" if t["side"] == 1 else "short",
             entry_time=t["entry_time"].strftime("%H:%M"), exit_time=t["exit_time"].strftime("%H:%M"),
             entry=round(t["entry"], 3), exit=round(t["exit"], 3), reason=t["reason"], gross_bp=round(gross, 2), net_bp=round(net, 2)))
     return rows, new_days
@@ -130,6 +133,21 @@ def stats(sub):
         exp=m, se=se, lo=m - 1.96 * se, hi=m + 1.96 * se, t=m / se if se > 0 else np.nan,
         pf=w.sum() / max(1e-9, -l.sum()), dd=dd)
 
+def official(tr, ss):
+    """Official paper account: 3 ATR stop for the first SWITCH_AFTER sessions of each symbol, no stop afterwards."""
+    keep = []
+    for sym in SYMS:
+        order = {d: k for k, d in enumerate(sorted(ss[ss.symbol == sym].date.astype(str).unique()))}
+        sub = tr[tr.symbol == sym].copy()
+        sub["ord"] = sub.date.astype(str).map(order)
+        keep.append(sub[((sub.ord < SWITCH_AFTER) & (sub.variant == "stop3")) | ((sub.ord >= SWITCH_AFTER) & (sub.variant == "nostop"))])
+    return pd.concat(keep) if keep else tr.iloc[0:0]
+
+def line(label, s):
+    if not s: return f"  {label}: too few trades"
+    return (f"  {label}: {s['n']} trades | win {s['win']:.0f}% avg win {s['avg_win']:+.1f}bp avg loss {s['avg_loss']:+.1f}bp "
+            f"| expectancy {s['exp']:+.2f}bp (95% CI {s['lo']:+.2f} to {s['hi']:+.2f}, t={s['t']:.2f}) | PF {s['pf']:.2f} | maxDD {s['dd']:.1f}%")
+
 def main():
     new_t = []; new_s = []
     for sym in SYMS:
@@ -138,27 +156,32 @@ def main():
     if new_t: append(TRADES, pd.DataFrame(new_t))
     if new_s: append(SESSIONS, pd.DataFrame(new_s))
     out = []
+    have = os.path.exists(TRADES) and os.path.exists(SESSIONS)
+    ss = pd.read_csv(SESSIONS) if have else None
+    tr = pd.read_csv(TRADES) if have else None
     if not new_s: out.append("No new completed session to process (market closed / holiday / already logged).")
     else:
         for d in sorted({x["date"] for x in new_s}):
             out.append(f"=== Session {d} ===")
             for sym in SYMS:
-                day = [t for t in new_t if t["date"] == d and t["symbol"] == sym]
                 if not any(x["date"] == d and x["symbol"] == sym for x in new_s): continue
-                if not day: out.append(f"{sym}: no trades"); continue
-                net = sum(t["net_bp"] for t in day); wins = sum(t["net_bp"] > 0 for t in day)
-                out.append(f"{sym}: {len(day)} trades, {wins} winners, net {net:+.1f} bp (sum of trades)")
-                for t in day: out.append(f"   {t['side']:5s} {t['entry_time']}->{t['exit_time']} {t['entry']}->{t['exit']} {t['reason']:9s} {t['net_bp']:+.1f}bp")
-    if os.path.exists(TRADES):
-        tr = pd.read_csv(TRADES); ss = pd.read_csv(SESSIONS)
+                k = sorted(ss[ss.symbol == sym].date.astype(str).unique()).index(d)
+                off = "stop3" if k < SWITCH_AFTER else "nostop"
+                out.append(f"{sym} (session {k + 1} of {MAX_SESSIONS}; official variant today: {off})")
+                for v in VARIANTS:
+                    day = [t for t in new_t if t["date"] == d and t["symbol"] == sym and t["variant"] == v]
+                    net = sum(t["net_bp"] for t in day); wins = sum(t["net_bp"] > 0 for t in day)
+                    out.append(f"  {v:7s}{' (official)' if v == off else '           '}: {len(day)} trades, {wins} winners, net {net:+.1f} bp")
+                for t in [t for t in new_t if t["date"] == d and t["symbol"] == sym and t["variant"] == off]:
+                    out.append(f"     {t['side']:5s} {t['entry_time']}->{t['exit_time']} {t['entry']}->{t['exit']} {t['reason']:9s} {t['net_bp']:+.1f}bp")
+    if have:
         out.append("\n=== CUMULATIVE (net of $0.01/share/side) ===")
+        off = official(tr, ss)
         for sym in SYMS:
-            nd = ss[ss.symbol == sym].date.nunique(); s = stats(tr[tr.symbol == sym])
-            if not s: out.append(f"{sym}: {nd} sessions, too few trades"); continue
-            out.append(f"{sym}: {nd} sessions, {s['n']} trades | win {s['win']:.0f}% avg win {s['avg_win']:+.1f}bp avg loss {s['avg_loss']:+.1f}bp "
-                       f"| expectancy {s['exp']:+.2f}bp (95% CI {s['lo']:+.2f} to {s['hi']:+.2f}, t={s['t']:.2f}) | PF {s['pf']:.2f} | maxDD {s['dd']:.1f}%")
-    if os.path.exists(SESSIONS):
-        ss = pd.read_csv(SESSIONS)
+            nd = ss[ss.symbol == sym].date.nunique()
+            out.append(f"{sym}: {nd} of {MAX_SESSIONS} sessions")
+            out.append(line("OFFICIAL (stop3 to session 15, nostop after)", stats(off[off.symbol == sym])))
+            for v in VARIANTS: out.append(line(f"{v} all sessions", stats(tr[(tr.symbol == sym) & (tr.variant == v)])))
         if all(ss[ss.symbol == y].date.nunique() >= MAX_SESSIONS for y in SYMS):
             out.append(f"\nTEST COMPLETE: {MAX_SESSIONS} sessions logged for every symbol. Write the final verdict against README.md.")
     text = "\n".join(out); print(text)
