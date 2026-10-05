@@ -4,7 +4,7 @@
   "max_concurrent": 8,
   "max_holding_days": 20,
   "cost_rate": 0.00075,
-  "cash": 1859.3017208680026,
+  "cash": 1829.7610369452414,
   "open_positions": [
     {
       "symbol": "STNG",
@@ -13,16 +13,7 @@
       "stop_price": 76.90455317229925,
       "target_price": 89.07089365540149,
       "allocated_capital": 1000.0,
-      "days_held": 4
-    },
-    {
-      "symbol": "OHI",
-      "entry_date": "2026-09-25",
-      "entry_price": 46.33,
-      "stop_price": 45.03087511385846,
-      "target_price": 48.92824977228308,
-      "allocated_capital": 1000.0,
-      "days_held": 4
+      "days_held": 5
     },
     {
       "symbol": "TARS",
@@ -31,7 +22,7 @@
       "stop_price": 71.22138168892185,
       "target_price": 85.43723662215629,
       "allocated_capital": 1000.0,
-      "days_held": 4
+      "days_held": 5
     },
     {
       "symbol": "NVMI",
@@ -40,7 +31,7 @@
       "stop_price": 342.6938378626785,
       "target_price": 415.01232427464305,
       "allocated_capital": 1000.0,
-      "days_held": 4
+      "days_held": 5
     },
     {
       "symbol": "VOD",
@@ -49,7 +40,7 @@
       "stop_price": 16.00121101330295,
       "target_price": 17.467577973394096,
       "allocated_capital": 1000.0,
-      "days_held": 4
+      "days_held": 5
     },
     {
       "symbol": "HPQ",
@@ -58,7 +49,7 @@
       "stop_price": 28.710219794286687,
       "target_price": 35.99956041142663,
       "allocated_capital": 1000.0,
-      "days_held": 4
+      "days_held": 5
     },
     {
       "symbol": "AMSC",
@@ -67,7 +58,7 @@
       "stop_price": 27.12252911595077,
       "target_price": 33.26494176809847,
       "allocated_capital": 1000.0,
-      "days_held": 2
+      "days_held": 3
     },
     {
       "symbol": "FIVE",
@@ -75,6 +66,15 @@
       "entry_price": 221.17,
       "stop_price": 206.98925824426254,
       "target_price": 249.5314835114749,
+      "allocated_capital": 1000.0,
+      "days_held": 1
+    },
+    {
+      "symbol": "CSX",
+      "entry_date": "2026-10-05",
+      "entry_price": 47.43,
+      "stop_price": 46.09234218630831,
+      "target_price": 50.105315627383376,
       "allocated_capital": 1000.0,
       "days_held": 0
     }
@@ -107,7 +107,21 @@
       "exit_reason": "stop_loss",
       "pnl_pct": -0.10149228611678879,
       "proceeds": 898.5077138832112
+    },
+    {
+      "symbol": "OHI",
+      "entry_date": "2026-09-25",
+      "entry_price": 46.33,
+      "stop_price": 45.03087511385846,
+      "target_price": 48.92824977228308,
+      "allocated_capital": 1000.0,
+      "days_held": 5,
+      "exit_date": "2026-10-05",
+      "exit_price": 45.03087511385846,
+      "exit_reason": "stop_loss",
+      "pnl_pct": -0.02954068392276149,
+      "proceeds": 970.4593160772386
     }
   ],
-  "last_run_date": "2026-10-02"
+  "last_run_date": "2026-10-05"
 }
