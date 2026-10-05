@@ -15,3 +15,4 @@ alert_ts_pt,symbol,strike,expiry,alert_entry,spot_at_alert,otm_pct,dte_approx,st
 2026-09-30 11:40,INTC,120,2026-09-30,0.70,119.3,0.6,0,expired,120.23,0.23,-67,120.55,,,,
 2026-10-01 07:53,META,750,2026-10-02,1.15,725,3.5,1,expired,728.08,0,-100,741.58,,,,
 2026-10-01 12:21,MU,1150,2026-10-02,1.80,1090,5.4,1,expired,1074.89,0,-100,1108.61,,,,bought 3:21pm ET; MU earnings were 9/30 after close
+2026-10-05 06:34,MSFT,525,2026-10-05,2.60,~528 (521.7 open -> 528.2 by 9:35ET; 531.8 by 9:45ET),-0.6 (ITM),0,open,,,,7.75 (as of 13:46Z),5.18 (conservative: high of 13:35Z minute bar; optimistic 4.43),,,"momentum chase after +2.1% opening gap. Alert entry 2.60 is BELOW the lowest option print today (3.13); contract traded 3.78-4.73 in the alert minute. Stale/unreproducible entry (2nd case after ORCL). Exit rule: +100% / -50% / 3:30pm ET (19:30Z) - settle from minute bars"

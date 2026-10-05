@@ -43,3 +43,14 @@ paste each new alert (with its Discord timestamp) into a session, decipher the l
 ## Files
 - `alerts_log.csv`: the 16 analysed alerts with outcomes and blank paper-trading columns.
 - `HANDOVER.md`: this file.
+
+## Update 2026-10-05: first live paper trade (MSFT 525c, expiry 10/5)
+- Alert: MSFT 525c 0DTE, "Entry $2.60", Discord 6:34 AM PT (9:34 ET). Pacific time assumption now consistent with the options tape.
+- Option minute bars from the open: first print 3.33 and a session low of 3.13 (13:32Z). **$2.60 never traded in regular hours today.**
+  In the alert minute (13:34Z) the contract traded 3.78-4.73. This is the second case (after ORCL 135c on 9/29) where the alert's Entry is not obtainable.
+  Any copy-trade backtest using alert prices will overstate returns. Use the quote at alert time instead.
+- Paper fill: no historical bid/ask is available, so the fill is the high of the minute bar after the alert (13:35Z) = **5.18** (conservative; mid-ish estimate 4.43).
+- Position state at 13:46Z: bid 5.95 / ask 6.30, mark 6.125 (+18% vs paper fill), IV 43%, delta 0.82, theta -3.10, break-even 531.13 vs spot 530.84, high so far 7.75.
+- Setup class: momentum chase after a +2.1% opening gap (like MSFT 9/25 and META 800c, which lost, and ORCL, which won).
+- Exit rule fixed in advance: sell at +100% (10.36), stop at -50% (2.59), or 3:30 pm ET (19:30Z, Robinhood's sellout time) whichever comes first.
+  Settle by scanning the option's minute bars (instrument id 779c5a47-e697-49a3-a44b-4f0a63ead598) from 13:35Z for the first trigger, then fill `paper_exit` / `paper_pnl_pct` in `alerts_log.csv`.
