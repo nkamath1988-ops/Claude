@@ -103,6 +103,6 @@ All three paper trades settled mechanically from option minute bars using the ru
 | Momentum chase after opening spike | 1 / 4 | ORCL won (stale entry price); MSFT 9/25, META 800c, MSFT 10/5 lost |
 | OTM swing (1-4 days) | 0 / 5 | GOOGL x3, GS, META 750c |
 | Bearish rollover (put) | 0 / 1 | MU 1050p |
-| Other | 0 / 2 | MU 1150c (loss), TLT 83c (live) and TSLA 365c (live) not counted |
+| Other | 0 / 1 settled (2 live) | MU 1150c lost; TLT 83c and TSLA 365c (spot 370.70 vs 365 on 10/2) still open and excluded from the ratio |
 
-Combined view: of the 18 alerts so far, still no class shows a hit rate that clearly beats its payoff structure. Sample sizes are 1-6 per class, so none of this is evidence of an edge or its absence.
+Combined view: of the 19 alerts so far, still no class shows a hit rate that clearly beats its payoff structure. Sample sizes are 1-6 per class, so none of this is evidence of an edge or its absence.
