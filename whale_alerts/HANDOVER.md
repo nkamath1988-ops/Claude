@@ -74,3 +74,10 @@ paste each new alert (with its Discord timestamp) into a session, decipher the l
 - Paper fill **1.05** = the LIVE ask 1m42s after the alert (16:17:42Z; bid 1.01, size 33 on the ask). This is the first fill taken from a real quote, not a minute-bar-high proxy,
   so it is more reliable than the MSFT (5.18) and MU (1.02) fills. Mark 1.03, IV 35.5%, delta 0.30, theta -6.13, break-even 746.03 vs spot 742.13.
 - Exit rule: +100% (2.10), -50% (0.525), or 3:30 pm ET (19:30Z). Settle from option minute bars from 16:18Z (instrument e1eac3d5-d919-4c79-89f0-ed60703ce785).
+
+## Interim note 2026-10-05 9:27 AM PT: META 745c in profit (unrealized)
+- Mark 2.06 (bid 2.02 / ask 2.10) vs paper fill 1.05 = about +96% (+92% at the bid). The +100% target (2.10) is 4 cents away; the settlement check will scan minute bars for the touch.
+- META 744.66 is still BELOW the 745 strike: the gain is all time value from a ~$2.5 (0.34%) bounce off 742.1 (delta 0.30 -> 0.48, gamma 0.07, IV 35.5% -> 36.9%).
+  Mechanism = long gamma on an ATM 0DTE: a small premium that reprices sharply on a small move. It is not intrinsic profit and can reverse (theta -7.5/day).
+- Setup read: buy-the-dip call on a trending day (+1.9%, high 746.7), entered about $4 under the high, within 0.4% of the strike, 3 hours before sellout.
+- One win does not validate the class. ATM 0DTE dip buys now stand at 6 trades with at most 2 winners (TSLA 347.5c, META 745c, pending settlement).
