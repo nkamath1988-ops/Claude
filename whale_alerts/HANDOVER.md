@@ -54,3 +54,14 @@ paste each new alert (with its Discord timestamp) into a session, decipher the l
 - Setup class: momentum chase after a +2.1% opening gap (like MSFT 9/25 and META 800c, which lost, and ORCL, which won).
 - Exit rule fixed in advance: sell at +100% (10.36), stop at -50% (2.59), or 3:30 pm ET (19:30Z, Robinhood's sellout time) whichever comes first.
   Settle by scanning the option's minute bars (instrument id 779c5a47-e697-49a3-a44b-4f0a63ead598) from 13:35Z for the first trigger, then fill `paper_exit` / `paper_pnl_pct` in `alerts_log.csv`.
+
+## Update 2026-10-05 (2): MU 1050p 0DTE paper trade
+- Alert: MU PUT 1050p expiry 10/5, "Entry $1.00", Discord 7:41 AM PT (10:41 ET). First put in the log (16 of 17 alerts are now calls),
+  which weakens the earlier worry that the feed only shows bullish prints.
+- Entry check: option minute bars traded 0.85-1.06 across 14:40-14:42Z, so $1.00 **was** obtainable. Unlike the MSFT and ORCL alerts, this entry price is credible.
+  Stale entries are therefore not universal: 2 confirmed cases (ORCL, MSFT), 1 clean case (MU put). Keep checking each alert.
+- Context: MU gapped down (open 1069.55 vs prev close 1074.89), hit 1055.56, bounced to ~1068.7, then rolled over to ~1063 as the put alert fired.
+  The put jumped 0.63 -> 1.06 in about 3 minutes around the alert. Setup class: bearish rollover / momentum continuation scalp (new class, n=1).
+- Paper fill 1.02 (high of the 14:42Z minute bar; no historical ask available). At 14:45Z: bid 1.11 / ask 1.14, mark 1.125 (+10%), IV 50%, delta -0.16, theta -7.35, break-even 1048.87 vs spot 1062.80 (needs about -1.3%).
+- Same exit rule as the MSFT trade: +100% (2.04), -50% (0.51), or 3:30 pm ET (19:30Z). Settle from minute bars (instrument id 17095dba-cfa6-4766-a730-6358d6de3307).
+  Caveat: a -50% stop on a ~$1 0DTE option sits inside ordinary noise (it moved 0.63 -> 1.06 in 3 minutes). The rule was fixed before the outcome, so keep it and note how often the stop is hit.
