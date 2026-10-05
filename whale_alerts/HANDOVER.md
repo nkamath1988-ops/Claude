@@ -81,3 +81,28 @@ paste each new alert (with its Discord timestamp) into a session, decipher the l
   Mechanism = long gamma on an ATM 0DTE: a small premium that reprices sharply on a small move. It is not intrinsic profit and can reverse (theta -7.5/day).
 - Setup read: buy-the-dip call on a trending day (+1.9%, high 746.7), entered about $4 under the high, within 0.4% of the strike, 3 hours before sellout.
 - One win does not validate the class. ATM 0DTE dip buys now stand at 6 trades with at most 2 winners (TSLA 347.5c, META 745c, pending settlement).
+
+## Settlement 2026-10-05 (scheduled check, 19:40Z)
+All three paper trades settled mechanically from option minute bars using the rule fixed in advance (+100% / -50% / 3:30 pm ET).
+
+| Trade | Setup class | Paper fill | Exit | Result | Alt: hold to 3:30pm ET |
+|---|---|---|---|---|---|
+| MSFT 525c 0DTE | momentum chase after +2.1% gap | 5.18 | 2.59 stop at 14:07Z (7:07am PT) | **-50%** | 3.80 (-27%) |
+| MU 1050p 0DTE | bearish rollover | 1.02 | 0.51 stop at 14:50Z (7:50am PT) | **-50%** | 0.03 (-97%) |
+| META 745c 0DTE | ATM dip buy | 1.05 | 2.10 target at 16:26Z (9:26am PT) | **+100%** | 0.46 (-56%) |
+
+- Per contract: MSFT -$259, MU -$51, META +$105 = **-$205 on $725 of premium (-28%)**. Equal-dollar average return: 0%. The MSFT premium dominated because it was the largest.
+- Nothing stopped out later reached its target (MSFT peaked at 7.75 before the fill window ended and never came back near 10.36; MU's best was 1.15 right after the alert). The stops did not cut winners.
+- The +100% target on META mattered: holding that contract to 3:30 pm would have turned a double into -56%. The stop on MU mattered the other way (-50% instead of -97%). Exit discipline, not entry, decided these three outcomes.
+- Fill caveat: MSFT and MU fills were minute-bar-high proxies (no historical ask). Stops and targets are assumed to execute at their level; on 0DTE contracts real slippage would likely make the stops slightly worse.
+
+### Running hit rate by setup class (all alerts logged so far, entry-to-outcome as logged)
+| Class | Wins / trades | Notes |
+|---|---|---|
+| ATM 0DTE dip buy | 2 / 6 | TSLA 347.5c (+285% at expiry), META 745c (+100% paper); AMD, INTC x2, AAPL lost |
+| Momentum chase after opening spike | 1 / 4 | ORCL won (stale entry price); MSFT 9/25, META 800c, MSFT 10/5 lost |
+| OTM swing (1-4 days) | 0 / 5 | GOOGL x3, GS, META 750c |
+| Bearish rollover (put) | 0 / 1 | MU 1050p |
+| Other | 0 / 2 | MU 1150c (loss), TLT 83c (live) and TSLA 365c (live) not counted |
+
+Combined view: of the 18 alerts so far, still no class shows a hit rate that clearly beats its payoff structure. Sample sizes are 1-6 per class, so none of this is evidence of an edge or its absence.
