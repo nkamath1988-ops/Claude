@@ -65,3 +65,12 @@ paste each new alert (with its Discord timestamp) into a session, decipher the l
 - Paper fill 1.02 (high of the 14:42Z minute bar; no historical ask available). At 14:45Z: bid 1.11 / ask 1.14, mark 1.125 (+10%), IV 50%, delta -0.16, theta -7.35, break-even 1048.87 vs spot 1062.80 (needs about -1.3%).
 - Same exit rule as the MSFT trade: +100% (2.04), -50% (0.51), or 3:30 pm ET (19:30Z). Settle from minute bars (instrument id 17095dba-cfa6-4766-a730-6358d6de3307).
   Caveat: a -50% stop on a ~$1 0DTE option sits inside ordinary noise (it moved 0.63 -> 1.06 in 3 minutes). The rule was fixed before the outcome, so keep it and note how often the stop is hit.
+
+## Update 2026-10-05 (3): META 745c 0DTE paper trade
+- Alert: META 745c expiry 10/5, "Entry $1.15", Discord 9:16 AM PT (12:16 ET), roughly 3h14m before Robinhood's 3:30 pm ET sellout.
+- Entry check: the 16:16Z minute bar traded 1.01-1.17, so $1.15 was obtainable. Clean case (MU put also clean; ORCL and MSFT were stale). Tally: 2 stale, 2 clean of the 4 checked with option bars.
+- Context: META +1.9% on the day, high 746.7 at 11:00 ET, then slid back below the 745 strike (742.1 at alert time). The call fell from 2.26 to 1.04 between 15:55Z and 16:15Z.
+  Setup class: ATM 0DTE dip-buy / reclaim (same class as AMD, INTC x2, TSLA 347.5c, AAPL: 1 of 5 won before today).
+- Paper fill **1.05** = the LIVE ask 1m42s after the alert (16:17:42Z; bid 1.01, size 33 on the ask). This is the first fill taken from a real quote, not a minute-bar-high proxy,
+  so it is more reliable than the MSFT (5.18) and MU (1.02) fills. Mark 1.03, IV 35.5%, delta 0.30, theta -6.13, break-even 746.03 vs spot 742.13.
+- Exit rule: +100% (2.10), -50% (0.525), or 3:30 pm ET (19:30Z). Settle from option minute bars from 16:18Z (instrument e1eac3d5-d919-4c79-89f0-ed60703ce785).
