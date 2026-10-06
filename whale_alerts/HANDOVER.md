@@ -106,3 +106,21 @@ All three paper trades settled mechanically from option minute bars using the ru
 | Other | 0 / 1 settled (2 live) | MU 1150c lost; TLT 83c and TSLA 365c (spot 370.70 vs 365 on 10/2) still open and excluded from the ratio |
 
 Combined view: of the 19 alerts so far, still no class shows a hit rate that clearly beats its payoff structure. Sample sizes are 1-6 per class, so none of this is evidence of an edge or its absence.
+
+## Update 2026-10-06: two new paper trades (ORCL 144c, AMZN 257.5c)
+Retroactive logging works: the option minute bars for a live contract can be pulled after the fact, so a missed alert can still be paper-filled from the bar after the alert time (bar-high proxy). Prefer live asks when the alert is fresh.
+
+**ORCL 144c, expiry 10/9, "Entry $3.00" (Discord 10/5 10:51 AM PT, logged late)**
+- Entry check: the alert-minute bars traded 2.98-3.03, so $3.00 was obtainable (clean). Paper fill 3.03.
+- Context: ORCL gapped up to 146.65 at the open on 10/5, faded to a tight 143.2-144.1 range by midday, and the alert came inside that range (spot ~143.7, 0.2% below strike, 4 days to expiry). Closed 142.48.
+- State at 7:41 AM PT 10/6: spot 144.51 (above strike), bid 3.00 / ask 3.10, mark 3.05 (+0.7% vs paper fill). IV 50%, delta 0.55, theta -0.43/day, break-even 147.05.
+- Setup class: near-ATM multi-day call bought in a post-gap-up range (new class, n=1). Rule: +100% (6.06), -50% (1.515), or 3:30 pm ET on 10/9 (19:30Z).
+
+**AMZN 257.5c, expiry 10/7, "Entry $0.70" (Discord 10/6 7:38 AM PT)**
+- Entry check: 0.70 last printed at 14:35Z, about 3 minutes BEFORE the alert; by the alert minute the option traded 0.75-0.79 and 3 minutes later the ask was 0.89. Mildly lagged, not stale in the ORCL-135c/MSFT sense.
+- Context: AMZN gapped up (253.40 open vs 251.40 close) and ground steadily higher to 254.88. Option had already gone 0.49 -> 0.77 since 14:30Z. Setup class: 1DTE OTM continuation call bought after the option had run (OTM swing class, previously 0 of 5).
+- Paper fill 0.89 (live ask 14:41:25Z, ~3 min after alert; optimistic 0.77). Mark 0.88, IV 32%, delta 0.30, theta -0.68/day, break-even 258.38 (needs about +1.4%), Robinhood chance of profit 23%.
+- Rule: +100% (1.78), -50% (0.445), or 3:30 pm ET on 10/7 (19:30Z).
+
+**Entry-price audit so far (alerts checked against option minute bars):** clean 3 (MU put, META 745c, ORCL 144c); mildly lagged 1 (AMZN, ~3 min); stale/unobtainable 2 (ORCL 135c about 30 min; MSFT 525c never printed at 2.60).
+Settlement is scheduled: AMZN at 10/7 19:40Z, ORCL 144c at 10/9 19:40Z.
