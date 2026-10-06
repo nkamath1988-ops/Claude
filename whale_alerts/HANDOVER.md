@@ -124,3 +124,23 @@ Retroactive logging works: the option minute bars for a live contract can be pul
 
 **Entry-price audit so far (alerts checked against option minute bars):** clean 3 (MU put, META 745c, ORCL 144c); mildly lagged 1 (AMZN, ~3 min); stale/unobtainable 2 (ORCL 135c about 30 min; MSFT 525c never printed at 2.60).
 Settlement is scheduled: AMZN at 10/7 19:40Z, ORCL 144c at 10/9 19:40Z.
+
+## Update 2026-10-06 (2): AVGO 387.5c and AVGO 400c
+Two alerts on the same name 11 minutes apart (Discord 10/6 8:19 and 8:30 AM PT). Both BUY calls, so this is a ladder of strikes/expiries (long both), not a vertical spread. Logged ~1h25m later from option minute bars; both entries are clean (alert prices sit inside the alert-minute bars).
+
+**Context:** AVGO ran 349.86 (10/2 open) -> 377.96, about +8% in 3 sessions, +4.3% today (gap to 366.8, surge to ~377 by 10:10 ET, then a tight 374.5-379.2 range). Both alerts landed in that consolidation, within about 0.3% of the day's high of 379.2.
+
+| | AVGO 387.5c exp 10/9 | AVGO 400c exp 10/12 |
+|---|---|---|
+| Alert / entry | 8:19 AM PT / 2.50 | 8:30 AM PT / 1.15 |
+| Spot at alert, OTM | ~378, 2.5% OTM, 3 days | ~377.6, 5.9% OTM, 4 days |
+| Paper fill (bar-high proxy) | 2.78 (optimistic 2.61) | 1.17 (optimistic 1.13) |
+| State at 9:44 AM PT | bid 2.27 / ask 2.35, mark 2.31, **-17% vs fill** | bid 1.13 / ask 1.18, mark 1.155, **-1% vs fill** |
+| Greeks | delta 0.27, theta -0.77/day, IV 41%, BE 389.81 | delta 0.13, theta -0.32/day, IV 37%, BE 401.16 |
+| Robinhood chance of profit | 21% | 11% |
+| Rule | +100% 5.56 / -50% 1.39 / 3:30pm ET 10/9 | +100% 2.34 / -0.585 / 3:30pm ET 10/12 |
+
+- Setup class: multi-day OTM call on a stock that had already run (OTM swing class, previously 0 of 5; AMZN 257.5c also pending). Not an opening-spike chase, since both were bought after the consolidation formed.
+- AVGO is flat since the alert (377.96 now vs ~378), yet the 387.5c is -17% vs the fill: that is time decay and a small IV drift, i.e. a "stock goes nowhere" scenario already costs these trades.
+- Paper-fill sensitivity: the option rose 15% in the three minutes after the 8:19 alert (2.42 -> 2.78), so the proxy fill is 11% above the alert price. Copying at the alert price would have been unachievable.
+- Settlement: 387.5c on 10/9 19:40Z (with the ORCL 144c check), 400c on 10/12 19:40Z. Note 10/12 is Columbus Day (equity options trade); weekend theta will hit the 400c before then.
