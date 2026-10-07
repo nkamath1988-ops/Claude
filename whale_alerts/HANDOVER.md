@@ -144,3 +144,19 @@ Two alerts on the same name 11 minutes apart (Discord 10/6 8:19 and 8:30 AM PT).
 - AVGO is flat since the alert (377.96 now vs ~378), yet the 387.5c is -17% vs the fill: that is time decay and a small IV drift, i.e. a "stock goes nowhere" scenario already costs these trades.
 - Paper-fill sensitivity: the option rose 15% in the three minutes after the 8:19 alert (2.42 -> 2.78), so the proxy fill is 11% above the alert price. Copying at the alert price would have been unachievable.
 - Settlement: 387.5c on 10/9 19:40Z (with the ORCL 144c check), 400c on 10/12 19:40Z. Note 10/12 is Columbus Day (equity options trade); weekend theta will hit the 400c before then.
+
+## Settlement 2026-10-07: AMZN 257.5c (alert 10/6 7:38 AM PT)
+- Paper fill 0.89, rule +100% (1.78) / -50% (0.445) / 3:30pm ET 10/7. Result: **-57%**. The option held 0.69-1.25 all of 10/6, then **opened 10/7 at 0.38**, gapping through the stop (prior-day close ~1.03). The stop fills at the open, 0.38, not at 0.445.
+- It then reversed: the option rose to a high of 2.36, first touched the +100% level (1.78) around 16:30Z, and was 1.88 at 3:30pm ET (+111% vs the fill). AMZN gapped down at the open, then rallied back above the 257.5 strike intraday (inferred from the option path; I did not pull the 10/7 stock bars). The rule exit and the hold-to-3:30 outcome are opposite signs.
+- Class: OTM swing (1-4 days) is now 0 of 6 under the fixed rule, though hold-to-expiry would have scored this one a win.
+
+### Exit-rule comparison on the four settled paper trades (same rule, hindsight view)
+| Trade | Rule result (+100/-50/3:30) | Hold to 3:30pm ET |
+|---|---|---|
+| MSFT 525c 0DTE | -50% (stop) | -27% |
+| MU 1050p 0DTE | -50% (stop) | -97% |
+| META 745c 0DTE | +100% (target) | -56% |
+| AMZN 257.5c 1DTE | -57% (stop, gap) | +111% |
+| **Average** | **-14%** | **-17%** |
+The rule helped on MU and META and hurt on MSFT and AMZN, ending roughly level with simply holding. Four trades cannot rank the rules. The overnight-gap case (AMZN) is a reminder that stops on multi-day contracts do not protect at the stop level.
+Still open: ORCL 144c and AVGO 387.5c (settle 10/9), AVGO 400c (10/12), TSLA 365c and TLT 83c (expiry values to be reported 10/9).
