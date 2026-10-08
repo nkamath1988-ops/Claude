@@ -168,3 +168,11 @@ Still open: ORCL 144c and AVGO 387.5c (settle 10/9), AVGO 400c (10/12), TSLA 365
 - **Settled by rule within 18 minutes:** the -50% stop (0.085) was first touched at 14:53Z (7:53 AM PT; bar low 0.08). Paper result **-50%**. At 8:02 AM PT the mark was 0.075 (bid 0.07 / ask 0.08), spot 109.2, break-even 117.08 vs spot 109.2 (needs +7.2%), Robinhood chance of profit 4%. Hold-to-3:30pm-10/9 value to be added by the 10/9 check for the exit-rule comparison.
 - **INTC pattern:** this is the third INTC dip-buy call alert in the log (116c 9/28 -96%, 120c 9/30 -67%, 117c 10/8 -50%), all losers. INTC peaked 127.4 on 9/24 and is now about 109 (-14%).
 - Entry-price audit: clean 6 (MU put, META 745c, ORCL 144c, AVGO 387.5c, AVGO 400c, INTC 117c), mildly lagged 1 (AMZN), stale 2 (ORCL 135c, MSFT).
+
+## Update 2026-10-08 (2): MU 1100c, expiry 10/9 (alert 11:31 AM PT = 2:31 PM ET)
+- Entry check: the alert-minute bar (18:31Z) traded 1.01-1.07; $1.00 is one cent below it (the 18:25Z bar closed 1.01). Essentially clean. Paper fill 1.13 (bar-high proxy; optimistic 1.05).
+- Context: MU spiked +7% on 10/7 (open 1017, close 1088) and gave back -4.5% today (low 1032.4 at 10:20 AM PT). A 15-minute bounce (MU 1038 -> 1049) lifted this call 0.77 -> 1.13, and the alert landed at that local top; the call fell to 0.85 two minutes later. It closed 10/7 at **11.00** and was 0.81 at 11:46 AM PT.
+- Setup: 5.0% OTM 1DTE call, IV 65%, delta 0.05, theta -1.88, break-even 1100.81 vs spot 1039.55 (needs +5.9%), Robinhood chance of profit 4.8%. Class: OTM swing/lottery, now 0 of 8.
+- State at 11:46 AM PT: bid 0.80 / ask 0.82, mark 0.81 = **-28% vs the paper fill** (-19% vs the alert price). Stop 0.565 and target 2.26 not touched yet (lowest low since the fill 0.74).
+- **MU pattern:** third MU alert in the log, with alternating direction: 1150c call (10/1, -100%), 1050p put (10/5, -50% by rule), now 1100c call. MU has swung 1017 -> 1088 -> 1040 in two days, so every alert has been well timed for a reversal after it was posted.
+- Settlement: added to the 10/9 19:40Z check.
