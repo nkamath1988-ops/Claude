@@ -160,3 +160,11 @@ Two alerts on the same name 11 minutes apart (Discord 10/6 8:19 and 8:30 AM PT).
 | **Average** | **-14%** | **-17%** |
 The rule helped on MU and META and hurt on MSFT and AMZN, ending roughly level with simply holding. Four trades cannot rank the rules. The overnight-gap case (AMZN) is a reminder that stops on multi-day contracts do not protect at the stop level.
 Still open: ORCL 144c and AVGO 387.5c (settle 10/9), AVGO 400c (10/12), TSLA 365c and TLT 83c (expiry values to be reported 10/9).
+
+## Update 2026-10-08: INTC 117c, expiry 10/9 (alert 7:35 AM PT)
+- Entry check: "Entry $0.16" sits inside the 14:35Z minute bar (0.16-0.17). Clean. Paper fill 0.17 (bar-high proxy).
+- Context: INTC gapped down 2.5% (113.12 -> 110.34), hit 108.55, bounced to 111.6 around 7:25 AM PT, then faded. The alert arrived during the fade; the call had run 0.13 -> 0.23 on the bounce and was back to 0.16. The option closed 10/7 at 0.77, so this is buying a contract that had already lost about 80% of its prior-day value.
+- Setup: deep-OTM (5.9%) 1DTE lottery, IV about 70%, delta 0.05. Class: OTM swing/lottery, now 0 of 7.
+- **Settled by rule within 18 minutes:** the -50% stop (0.085) was first touched at 14:53Z (7:53 AM PT; bar low 0.08). Paper result **-50%**. At 8:02 AM PT the mark was 0.075 (bid 0.07 / ask 0.08), spot 109.2, break-even 117.08 vs spot 109.2 (needs +7.2%), Robinhood chance of profit 4%. Hold-to-3:30pm-10/9 value to be added by the 10/9 check for the exit-rule comparison.
+- **INTC pattern:** this is the third INTC dip-buy call alert in the log (116c 9/28 -96%, 120c 9/30 -67%, 117c 10/8 -50%), all losers. INTC peaked 127.4 on 9/24 and is now about 109 (-14%).
+- Entry-price audit: clean 6 (MU put, META 745c, ORCL 144c, AVGO 387.5c, AVGO 400c, INTC 117c), mildly lagged 1 (AMZN), stale 2 (ORCL 135c, MSFT).
