@@ -4,7 +4,7 @@
   "max_concurrent": 8,
   "max_holding_days": 20,
   "cost_rate": 0.00075,
-  "cash": 1764.1441053734306,
+  "cash": 1700.2610312412803,
   "open_positions": [
     {
       "symbol": "STNG",
@@ -13,16 +13,7 @@
       "stop_price": 76.90455317229925,
       "target_price": 89.07089365540149,
       "allocated_capital": 1000.0,
-      "days_held": 7
-    },
-    {
-      "symbol": "TARS",
-      "entry_date": "2026-09-25",
-      "entry_price": 75.96,
-      "stop_price": 71.22138168892185,
-      "target_price": 85.43723662215629,
-      "allocated_capital": 1000.0,
-      "days_held": 7
+      "days_held": 8
     },
     {
       "symbol": "NVMI",
@@ -31,7 +22,7 @@
       "stop_price": 342.6938378626785,
       "target_price": 415.01232427464305,
       "allocated_capital": 1000.0,
-      "days_held": 7
+      "days_held": 8
     },
     {
       "symbol": "VOD",
@@ -40,7 +31,7 @@
       "stop_price": 16.00121101330295,
       "target_price": 17.467577973394096,
       "allocated_capital": 1000.0,
-      "days_held": 7
+      "days_held": 8
     },
     {
       "symbol": "HPQ",
@@ -49,7 +40,7 @@
       "stop_price": 28.710219794286687,
       "target_price": 35.99956041142663,
       "allocated_capital": 1000.0,
-      "days_held": 7
+      "days_held": 8
     },
     {
       "symbol": "AMSC",
@@ -58,7 +49,7 @@
       "stop_price": 27.12252911595077,
       "target_price": 33.26494176809847,
       "allocated_capital": 1000.0,
-      "days_held": 5
+      "days_held": 6
     },
     {
       "symbol": "CSX",
@@ -67,7 +58,7 @@
       "stop_price": 46.09234218630831,
       "target_price": 50.105315627383376,
       "allocated_capital": 1000.0,
-      "days_held": 2
+      "days_held": 3
     },
     {
       "symbol": "HASI",
@@ -75,6 +66,15 @@
       "entry_price": 36.35,
       "stop_price": 34.9812012487294,
       "target_price": 39.087597502541215,
+      "allocated_capital": 1000.0,
+      "days_held": 1
+    },
+    {
+      "symbol": "FDX",
+      "entry_date": "2026-10-09",
+      "entry_price": 291.73,
+      "stop_price": 282.4848164003375,
+      "target_price": 310.2203671993251,
       "allocated_capital": 1000.0,
       "days_held": 0
     }
@@ -135,7 +135,21 @@
       "exit_reason": "stop_loss",
       "pnl_pct": -0.06561693157181098,
       "proceeds": 934.3830684281891
+    },
+    {
+      "symbol": "TARS",
+      "entry_date": "2026-09-25",
+      "entry_price": 75.96,
+      "stop_price": 71.22138168892185,
+      "target_price": 85.43723662215629,
+      "allocated_capital": 1000.0,
+      "days_held": 8,
+      "exit_date": "2026-10-09",
+      "exit_price": 71.22138168892185,
+      "exit_reason": "stop_loss",
+      "pnl_pct": -0.06388307413215039,
+      "proceeds": 936.1169258678497
     }
   ],
-  "last_run_date": "2026-10-08"
+  "last_run_date": "2026-10-09"
 }
