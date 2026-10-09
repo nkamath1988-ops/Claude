@@ -176,3 +176,42 @@ Still open: ORCL 144c and AVGO 387.5c (settle 10/9), AVGO 400c (10/12), TSLA 365
 - State at 11:46 AM PT: bid 0.80 / ask 0.82, mark 0.81 = **-28% vs the paper fill** (-19% vs the alert price). Stop 0.565 and target 2.26 not touched yet (lowest low since the fill 0.74).
 - **MU pattern:** third MU alert in the log, with alternating direction: 1150c call (10/1, -100%), 1050p put (10/5, -50% by rule), now 1100c call. MU has swung 1017 -> 1088 -> 1040 in two days, so every alert has been well timed for a reversal after it was posted.
 - Settlement: added to the 10/9 19:40Z check.
+
+## Settlement 2026-10-09 (scheduled check, 19:40Z)
+Fixed rule: +100% / -50% / 3:30 pm ET, first trigger wins. **All four paper trades settled as losses; three of them gapped through the stop.**
+
+| Trade | Setup class | Paper fill | Exit (rule) | Result | Hold to 3:30pm 10/9 |
+|---|---|---|---|---|---|
+| ORCL 144c (10/9) | near-ATM multi-day, post-gap range | 3.03 | 1.17 at the 10/8 open (stop 1.515 gapped) | **-61%** | 0.03 (-99%) |
+| AVGO 387.5c (10/9) | OTM swing | 2.78 | 0.94 at the 10/7 open (stop 1.39 gapped) | **-66%** | 0.01 (-99.6%) |
+| MU 1100c (10/9) | OTM swing/lottery | 1.13 | 0.36 at the 10/9 open (stop 0.565 gapped) | **-68%** | 0.01 (-99%) |
+| INTC 117c (10/9) | OTM swing/lottery | 0.17 | 0.085 stop 10/8 14:53Z (confirmed) | **-50%** | 0.01 (-94%) |
+
+- **ORCL peaked at 4.53 (+50%) and AVGO at 3.33 (+20%) after the fill; neither came close to +100%.** All three multi-day/overnight contracts lost 60%+ because an overnight gap through the stop fills at the next open, not at the stop level.
+- **Data caveat (important for the protocol):** minute bars for 10/5-10/7 are now entirely gap-filled (`interpolated: true`), so those days were settled from 5-minute bars (real, 0 interpolated). 10/8-10/9 minute bars are real; interpolated bars were ignored for trigger detection. Lesson: **save minute bars the same day** or settle within about 2 trading days; older data degrades to 5-minute resolution. Trigger timestamps for ORCL/AVGO before 10/8 are therefore 5-minute-resolution.
+- **TSLA 365c (10/9), alert 9/30 3:58 AM PT at 3.00:** about **17.88 intrinsic** at 19:42Z (TSLA 382.88; mark 18.05, position-closing-only after 19:30Z) = about +496% vs the alert price. It pre-dates paper trading (no paper fill, minute bars gone); it would have hit +100% by 10/2 under the rule, so it counts as a win on any reasonable exit. Final 4 pm ET close not captured.
+- **TLT 83c (11/30), alert 9/30 at 0.37:** expires 11/30 (not 10/9). Mark 0.235 (-36% vs alert), TLT 77.905, 83.24 break-even, chance of profit 10.7%. Still open.
+
+### Exit-rule comparison on all settled paper trades (rule result vs holding to 3:30pm ET on expiry day)
+| Trade | Rule | Hold |
+|---|---|---|
+| MSFT 525c 0DTE | -50% | -27% |
+| MU 1050p 0DTE | -50% | -97% |
+| META 745c 0DTE | +100% | -56% |
+| AMZN 257.5c 1DTE | -57% | +111% |
+| ORCL 144c 4DTE | -61% | -99% |
+| AVGO 387.5c 3DTE | -66% | -99.6% |
+| INTC 117c 1DTE | -50% | -94% |
+| MU 1100c 1DTE | -68% | -99% |
+| **Average (8)** | **-38%** | **-58%** |
+The rule beats holding by about 20 points on average, mostly because far-OTM contracts expire worthless; it lost to holding only on AMZN (+111% hold) and MSFT. The stop did not protect to -50% on any multi-day trade (gap fills of -57% to -68%). Still no evidence of an edge in the alerts themselves: 2 paper winners of 8.
+
+### Running hit rate by setup class (settled)
+| Class | Wins / trades | Notes |
+|---|---|---|
+| ATM 0DTE dip buy | 2 / 6 | TSLA 347.5c (at expiry), META 745c (paper); AMD, INTC 116c/120c, AAPL lost |
+| Momentum chase after opening spike | 1 / 4 | ORCL 135c won (stale entry); MSFT 9/25, META 800c, MSFT 10/5 lost |
+| OTM swing / lottery (1-7 days) | 1 / 10 | TSLA 365c won (alert-price basis); GOOGL x3, GS, META 750c, AMZN, INTC 117c, MU 1100c, AVGO 387.5c lost; AVGO 400c pending (10/12) |
+| Near-ATM multi-day after a gap-up fade | 0 / 1 | ORCL 144c |
+| Bearish rollover (put) | 0 / 1 | MU 1050p |
+| Other | 0 / 1 | MU 1150c lost; TLT 83c open |
