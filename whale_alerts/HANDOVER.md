@@ -223,3 +223,35 @@ The rule beats holding by about 20 points on average, mostly because far-OTM con
 - Setup: 6.0% OTM weekly call, IV 55%, delta 0.12, theta -0.24, break-even 175.58, Robinhood chance of profit 10%. Class: OTM swing/lottery (now 1 of 11 settled/open count, 0 pending wins).
 - State at 7:17 AM PT: bid 0.57 / ask 0.58, mark 0.575 = **-37% vs the paper fill**; stop (0.46) not yet touched, lowest low since the fill 0.54. Target 1.84.
 - Settlement scheduled 10/16 19:40Z. Minute bars older than about 2 trading days degrade to gap-fill, so use 5-minute bars for 10/12-10/14 and minute bars for 10/15-10/16.
+
+## Settlement 2026-10-12: AVGO 400c (expiry 10/12, alert 10/6 8:30 AM PT)
+- Paper fill 1.17; rule +100% (2.34) / -50% (0.585) / 3:30pm ET. **Result -63%:** the call closed 10/6 near 0.94 and **opened 10/7 at 0.43** (5-minute bar 13:30Z), gapping through the stop, so the exit is the open. Best price after the fill was 1.61 (+38%) on 10/6 at 17:45Z. Hold-to-3:30pm 10/12 = 0.01 (-99%); the contract expired worthless.
+- Data: 5-minute bars 10/6-10/9 are real (one interpolated bar ignored); 10/12 minute bars were mostly interpolated because the contract was trading at 0.01, which is irrelevant to the outcome.
+
+### Finding: overnight gaps beat the stop every time
+Every paper trade held overnight gapped through the -50% stop: AMZN -57, ORCL 144c -61, AVGO 387.5c -66, MU 1100c -68, AVGO 400c -63 (**5 of 5, average exit -63%**). Only the two 0DTE stops filled near -50% intraday (MSFT, MU put, INTC 117c). So for OTM weeklies a -50% stop is a **-60% to -70% stop in practice** if held overnight. The alternative is not holding overnight (then the loss is the intraday move only).
+
+### Exit-rule comparison on all 9 settled paper trades (rule vs holding to 3:30pm ET on expiry day)
+| Trade | Rule | Hold |
+|---|---|---|
+| MSFT 525c 0DTE | -50% | -27% |
+| MU 1050p 0DTE | -50% | -97% |
+| META 745c 0DTE | +100% | -56% |
+| AMZN 257.5c 1DTE | -57% | +111% |
+| ORCL 144c 4DTE | -61% | -99% |
+| AVGO 387.5c 3DTE | -66% | -99.6% |
+| INTC 117c 1DTE | -50% | -94% |
+| MU 1100c 1DTE | -68% | -99% |
+| AVGO 400c 4DTE | -63% | -99% |
+| **Average (9)** | **-41%** | **-62%** |
+1 paper winner of 9 (META 745c). Rule beats holding by about 21 points on average, mostly because far-OTM weeklies usually expire worthless.
+
+### Running hit rate by setup class (settled)
+| Class | Wins / trades | Notes |
+|---|---|---|
+| ATM 0DTE dip buy | 2 / 6 | TSLA 347.5c (at expiry), META 745c (paper) |
+| Momentum chase after opening spike | 1 / 4 | ORCL 135c won (stale entry) |
+| OTM swing / lottery (1-7 days) | 1 / 11 | only winner TSLA 365c (alert-price basis); AVGO 400c now lost; SPCX 175c pending (10/16) |
+| Near-ATM multi-day after a gap-up fade | 0 / 1 | ORCL 144c |
+| Bearish rollover (put) | 0 / 1 | MU 1050p |
+| Other | 0 / 1 | MU 1150c; TLT 83c open |
