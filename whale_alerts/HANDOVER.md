@@ -215,3 +215,11 @@ The rule beats holding by about 20 points on average, mostly because far-OTM con
 | Near-ATM multi-day after a gap-up fade | 0 / 1 | ORCL 144c |
 | Bearish rollover (put) | 0 / 1 | MU 1050p |
 | Other | 0 / 1 | MU 1150c lost; TLT 83c open |
+
+## Update 2026-10-12: SPCX 175c, expiry 10/16 (alert 7:01 AM PT = 10:01 AM ET)
+- **Underlying:** SPCX is Space Exploration Technologies Corp. Class A (Robinhood search). First alert on this name and the first on a recently listed, high-volatility stock (60-135M shares a day). Daily path: 148 (10/1) -> 171 (10/5, +16% in two sessions) -> 176.4 high (10/6) -> 162.6 (10/9) -> 163.1 now.
+- Entry check: "Entry $0.95" is one cent above the alert-minute high (0.88-0.94); the option had been 0.89-1.07 for the preceding minutes. Essentially clean. Paper fill 0.92 (high of the 14:02Z bar; optimistic 0.87).
+- Context: SPCX bounced 161 -> 167 in the first 25 minutes; the call ran 0.58 -> 1.29 in 13 minutes (+120%), then fell 30% to 0.89 by the alert minute. The alert arrived about 4 minutes after the option's peak (same pattern as MU 1100c and META 745c: the alert trails the local top).
+- Setup: 6.0% OTM weekly call, IV 55%, delta 0.12, theta -0.24, break-even 175.58, Robinhood chance of profit 10%. Class: OTM swing/lottery (now 1 of 11 settled/open count, 0 pending wins).
+- State at 7:17 AM PT: bid 0.57 / ask 0.58, mark 0.575 = **-37% vs the paper fill**; stop (0.46) not yet touched, lowest low since the fill 0.54. Target 1.84.
+- Settlement scheduled 10/16 19:40Z. Minute bars older than about 2 trading days degrade to gap-fill, so use 5-minute bars for 10/12-10/14 and minute bars for 10/15-10/16.
