@@ -1,7 +1,7 @@
 {
   "alerts": [
     {
-      "active": true,
+      "active": false,
       "alert_id": "a67c587f-03b9-4a62-8b8f-587185db6dbd",
       "condition_type": "price_below",
       "key": "gap15:2026-10-15T14:40:00Z",
@@ -10,7 +10,7 @@
       "threshold": "766.40"
     },
     {
-      "active": true,
+      "active": false,
       "alert_id": "19f20cc5-ece4-469a-af67-267ceb1b56e7",
       "condition_type": "price_above",
       "key": "gap15:2026-10-15T14:40:00Z",

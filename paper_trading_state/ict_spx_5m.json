@@ -1,56 +1,62 @@
 {
   "bar_minutes": 5,
-  "last_bar_ts": "2026-10-15T15:00:00Z",
+  "last_bar_ts": "2026-10-15T19:55:00Z",
   "notify": [
     "gap15"
   ],
   "open": {
-    "gap15": {
-      "entry": 7716.11,
-      "entry_time": "2026-10-15T14:45:00Z",
-      "exit": null,
-      "exit_reason": null,
-      "exit_time": null,
-      "gap": 23.35,
-      "pts": null,
-      "r": null,
-      "risk": 26.07,
-      "side": "long",
-      "signal_time": "2026-10-15T14:40:00Z",
-      "status": "open",
-      "stop": 7690.04,
-      "swept": 7696.6,
-      "target": 7789.15,
-      "variant": "gap15"
-    },
-    "spec9": {
-      "entry": 7716.11,
-      "entry_time": "2026-10-15T14:45:00Z",
-      "exit": null,
-      "exit_reason": null,
-      "exit_time": null,
-      "gap": 23.35,
-      "pts": null,
-      "r": null,
-      "risk": 26.07,
-      "side": "long",
-      "signal_time": "2026-10-15T14:40:00Z",
-      "status": "open",
-      "stop": 7690.04,
-      "swept": 7696.6,
-      "target": 7789.15,
-      "variant": "spec9"
-    }
+    "gap15": null,
+    "spec9": null
   },
   "reported": [
+    "exit:gap15:2026-10-15T14:45:00Z",
+    "exit:spec9:2026-10-15T14:45:00Z",
     "sig:gap15:2026-10-15T14:40:00Z",
     "sig:spec9:2026-10-15T14:40:00Z"
   ],
-  "runs": 15,
+  "runs": 16,
   "start_ts": "2026-09-29T23:42:20Z",
   "trades": {
-    "gap15": [],
-    "spec9": []
+    "gap15": [
+      {
+        "entry": 7716.11,
+        "entry_time": "2026-10-15T14:45:00Z",
+        "exit": 7743.88,
+        "exit_reason": "eod",
+        "exit_time": "2026-10-15T19:55:00Z",
+        "gap": 23.35,
+        "pts": 27.27,
+        "r": 1.046,
+        "risk": 26.07,
+        "side": "long",
+        "signal_time": "2026-10-15T14:40:00Z",
+        "status": "closed",
+        "stop": 7690.04,
+        "swept": 7696.6,
+        "target": 7789.15,
+        "variant": "gap15"
+      }
+    ],
+    "spec9": [
+      {
+        "entry": 7716.11,
+        "entry_time": "2026-10-15T14:45:00Z",
+        "exit": 7743.88,
+        "exit_reason": "eod",
+        "exit_time": "2026-10-15T19:55:00Z",
+        "gap": 23.35,
+        "pts": 27.27,
+        "r": 1.046,
+        "risk": 26.07,
+        "side": "long",
+        "signal_time": "2026-10-15T14:40:00Z",
+        "status": "closed",
+        "stop": 7690.04,
+        "swept": 7696.6,
+        "target": 7789.15,
+        "variant": "spec9"
+      }
+    ]
   },
   "variants": {
     "gap15": {
