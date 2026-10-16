@@ -255,3 +255,36 @@ Every paper trade held overnight gapped through the -50% stop: AMZN -57, ORCL 14
 | Near-ATM multi-day after a gap-up fade | 0 / 1 | ORCL 144c |
 | Bearish rollover (put) | 0 / 1 | MU 1050p |
 | Other | 0 / 1 | MU 1150c; TLT 83c open |
+
+## Settlement 2026-10-16: SPCX 175c (expiry 10/16, alert 10/12 7:01 AM PT)
+- Paper fill 0.92; rule +100% (1.84) / -50% (0.46) / 3:30pm ET. **Result -50%:** the call drifted down from 0.93 to the low 0.5s during 10/12 and the stop (0.46) was first touched in the **19:50Z (3:50 pm ET) 5-minute bar** (open 0.47, low 0.44), ten minutes before the close. Exit assumed at the stop level.
+- **Near miss on the overnight gap:** had the stop not triggered that afternoon, the call opened 10/13 at 0.22 (-76%). The -50% stop landed on an intraday trigger only by luck of timing. Hold-to-3:30pm 10/16 = 0.01 (-99%); SPCX closed the week near 143.7 vs the 175 strike.
+- Data: 5-minute bars were real for 10/12-10/15; 10/16 minute bars were mostly real (133 of 361 non-interpolated) and sat at 0.01.
+
+### Exit-rule comparison on all 10 settled paper trades (rule vs holding to 3:30pm ET on expiry day)
+| Trade | Rule | Hold |
+|---|---|---|
+| MSFT 525c 0DTE | -50% | -27% |
+| MU 1050p 0DTE | -50% | -97% |
+| META 745c 0DTE | +100% | -56% |
+| AMZN 257.5c 1DTE | -57% | +111% |
+| ORCL 144c 4DTE | -61% | -99% |
+| AVGO 387.5c 3DTE | -66% | -99.6% |
+| INTC 117c 1DTE | -50% | -94% |
+| MU 1100c 1DTE | -68% | -99% |
+| AVGO 400c 4DTE | -63% | -99% |
+| SPCX 175c 4DTE | -50% | -99% |
+| **Average (10)** | **-42%** | **-66%** |
+1 paper winner of 10 (META 745c). The rule's edge over holding is about 24 points, driven by weeklies expiring worthless.
+
+### Running hit rate by setup class (settled)
+| Class | Wins / trades | Notes |
+|---|---|---|
+| ATM 0DTE dip buy | 2 / 6 | TSLA 347.5c (at expiry), META 745c (paper) |
+| Momentum chase after opening spike | 1 / 4 | ORCL 135c won (stale entry) |
+| OTM swing / lottery (1-7 days) | 1 / 12 | only winner TSLA 365c (alert-price basis); SPCX 175c now lost |
+| Near-ATM multi-day after a gap-up fade | 0 / 1 | ORCL 144c |
+| Bearish rollover (put) | 0 / 1 | MU 1050p |
+| Other | 0 / 1 | MU 1150c; TLT 83c still open (11/30) |
+
+Status: no paper trades are open except TLT 83c (alert-price basis, expires 11/30). No further settlement checks are scheduled.
