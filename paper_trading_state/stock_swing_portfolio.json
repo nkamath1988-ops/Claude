@@ -4,7 +4,7 @@
   "max_concurrent": 8,
   "max_holding_days": 20,
   "cost_rate": 0.00075,
-  "cash": 1628.8922946339362,
+  "cash": 1745.698772007001,
   "open_positions": [
     {
       "symbol": "HPQ",
@@ -13,16 +13,7 @@
       "stop_price": 28.710219794286687,
       "target_price": 35.99956041142663,
       "allocated_capital": 1000.0,
-      "days_held": 15
-    },
-    {
-      "symbol": "CSX",
-      "entry_date": "2026-10-05",
-      "entry_price": 47.43,
-      "stop_price": 46.09234218630831,
-      "target_price": 50.105315627383376,
-      "allocated_capital": 1000.0,
-      "days_held": 10
+      "days_held": 16
     },
     {
       "symbol": "HASI",
@@ -31,7 +22,7 @@
       "stop_price": 34.9812012487294,
       "target_price": 39.087597502541215,
       "allocated_capital": 1000.0,
-      "days_held": 8
+      "days_held": 9
     },
     {
       "symbol": "FDX",
@@ -40,7 +31,7 @@
       "stop_price": 282.4848164003375,
       "target_price": 310.2203671993251,
       "allocated_capital": 1000.0,
-      "days_held": 7
+      "days_held": 8
     },
     {
       "symbol": "SIRI",
@@ -49,16 +40,7 @@
       "stop_price": 25.507186902110803,
       "target_price": 28.815626195778393,
       "allocated_capital": 1000.0,
-      "days_held": 6
-    },
-    {
-      "symbol": "MAC",
-      "entry_date": "2026-10-13",
-      "entry_price": 22.53,
-      "stop_price": 21.81578864598031,
-      "target_price": 23.958422708039382,
-      "allocated_capital": 1000.0,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "symbol": "VOYA",
@@ -67,7 +49,7 @@
       "stop_price": 91.70885648718077,
       "target_price": 101.94228702563848,
       "allocated_capital": 1000.0,
-      "days_held": 4
+      "days_held": 5
     },
     {
       "symbol": "EPD",
@@ -76,7 +58,25 @@
       "stop_price": 34.86097824716799,
       "target_price": 37.648043505664006,
       "allocated_capital": 1000.0,
-      "days_held": 4
+      "days_held": 5
+    },
+    {
+      "symbol": "ESAB",
+      "entry_date": "2026-10-23",
+      "entry_price": 66.89,
+      "stop_price": 62.431081313574104,
+      "target_price": 75.8078373728518,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    },
+    {
+      "symbol": "BNY",
+      "entry_date": "2026-10-23",
+      "entry_price": 145.32,
+      "stop_price": 140.5005384481988,
+      "target_price": 154.95892310360242,
+      "allocated_capital": 1000.0,
+      "days_held": 0
     }
   ],
   "closed_trades": [
@@ -205,7 +205,35 @@
       "exit_reason": "stop_loss",
       "pnl_pct": -0.07169097991255508,
       "proceeds": 928.3090200874449
+    },
+    {
+      "symbol": "CSX",
+      "entry_date": "2026-10-05",
+      "entry_price": 47.43,
+      "stop_price": 46.09234218630831,
+      "target_price": 50.105315627383376,
+      "allocated_capital": 1000.0,
+      "days_held": 11,
+      "exit_date": "2026-10-23",
+      "exit_price": 50.105315627383376,
+      "exit_reason": "take_profit",
+      "pnl_pct": 0.054905558241268804,
+      "proceeds": 1054.9055582412686
+    },
+    {
+      "symbol": "MAC",
+      "entry_date": "2026-10-13",
+      "entry_price": 22.53,
+      "stop_price": 21.81578864598031,
+      "target_price": 23.958422708039382,
+      "allocated_capital": 1000.0,
+      "days_held": 7,
+      "exit_date": "2026-10-23",
+      "exit_price": 23.958422708039382,
+      "exit_reason": "take_profit",
+      "pnl_pct": 0.061900919131796794,
+      "proceeds": 1061.9009191317966
     }
   ],
-  "last_run_date": "2026-10-22"
+  "last_run_date": "2026-10-23"
 }
