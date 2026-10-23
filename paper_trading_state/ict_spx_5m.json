@@ -1,6 +1,6 @@
 {
   "bar_minutes": 5,
-  "last_bar_ts": "2026-10-22T19:55:00Z",
+  "last_bar_ts": "2026-10-23T19:55:00Z",
   "notify": [
     "gap15"
   ],
@@ -11,10 +11,12 @@
   "reported": [
     "exit:gap15:2026-10-15T14:45:00Z",
     "exit:spec9:2026-10-15T14:45:00Z",
+    "exit:spec9:2026-10-23T14:50:00Z",
     "sig:gap15:2026-10-15T14:40:00Z",
-    "sig:spec9:2026-10-15T14:40:00Z"
+    "sig:spec9:2026-10-15T14:40:00Z",
+    "sig:spec9:2026-10-23T14:45:00Z"
   ],
-  "runs": 22,
+  "runs": 23,
   "start_ts": "2026-09-29T23:42:20Z",
   "trades": {
     "gap15": [
@@ -54,6 +56,24 @@
         "stop": 7690.04,
         "swept": 7696.6,
         "target": 7789.15,
+        "variant": "spec9"
+      },
+      {
+        "entry": 7647.73,
+        "entry_time": "2026-10-23T14:50:00Z",
+        "exit": 7636.18,
+        "exit_reason": "stop",
+        "exit_time": "2026-10-23T17:05:00Z",
+        "gap": 9.87,
+        "pts": -12.05,
+        "r": -1.043,
+        "risk": 11.55,
+        "side": "long",
+        "signal_time": "2026-10-23T14:45:00Z",
+        "status": "closed",
+        "stop": 7636.18,
+        "swept": 7637.36,
+        "target": 7683.13,
         "variant": "spec9"
       }
     ]
