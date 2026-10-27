@@ -13,7 +13,7 @@
       "stop_price": 28.710219794286687,
       "target_price": 35.99956041142663,
       "allocated_capital": 1000.0,
-      "days_held": 17
+      "days_held": 18
     },
     {
       "symbol": "HASI",
@@ -22,7 +22,7 @@
       "stop_price": 34.9812012487294,
       "target_price": 39.087597502541215,
       "allocated_capital": 1000.0,
-      "days_held": 10
+      "days_held": 11
     },
     {
       "symbol": "FDX",
@@ -31,7 +31,7 @@
       "stop_price": 282.4848164003375,
       "target_price": 310.2203671993251,
       "allocated_capital": 1000.0,
-      "days_held": 9
+      "days_held": 10
     },
     {
       "symbol": "SIRI",
@@ -40,7 +40,7 @@
       "stop_price": 25.507186902110803,
       "target_price": 28.815626195778393,
       "allocated_capital": 1000.0,
-      "days_held": 8
+      "days_held": 9
     },
     {
       "symbol": "VOYA",
@@ -49,7 +49,7 @@
       "stop_price": 91.70885648718077,
       "target_price": 101.94228702563848,
       "allocated_capital": 1000.0,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "symbol": "EPD",
@@ -58,7 +58,7 @@
       "stop_price": 34.86097824716799,
       "target_price": 37.648043505664006,
       "allocated_capital": 1000.0,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "symbol": "ESAB",
@@ -67,7 +67,7 @@
       "stop_price": 62.431081313574104,
       "target_price": 75.8078373728518,
       "allocated_capital": 1000.0,
-      "days_held": 1
+      "days_held": 2
     },
     {
       "symbol": "BNY",
@@ -76,7 +76,7 @@
       "stop_price": 140.5005384481988,
       "target_price": 154.95892310360242,
       "allocated_capital": 1000.0,
-      "days_held": 1
+      "days_held": 2
     }
   ],
   "closed_trades": [
@@ -235,5 +235,5 @@
       "proceeds": 1061.9009191317966
     }
   ],
-  "last_run_date": "2026-10-26"
+  "last_run_date": "2026-10-27"
 }
