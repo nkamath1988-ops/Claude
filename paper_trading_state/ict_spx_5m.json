@@ -1,6 +1,6 @@
 {
   "bar_minutes": 5,
-  "last_bar_ts": "2026-10-27T19:55:00Z",
+  "last_bar_ts": "2026-10-28T19:55:00Z",
   "notify": [
     "gap15"
   ],
@@ -16,7 +16,7 @@
     "sig:spec9:2026-10-15T14:40:00Z",
     "sig:spec9:2026-10-23T14:45:00Z"
   ],
-  "runs": 25,
+  "runs": 26,
   "start_ts": "2026-09-29T23:42:20Z",
   "trades": {
     "gap15": [
