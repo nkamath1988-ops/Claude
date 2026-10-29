@@ -4,17 +4,8 @@
   "max_concurrent": 8,
   "max_holding_days": 20,
   "cost_rate": 0.00075,
-  "cash": 1745.698772007001,
+  "cash": 1836.682009670917,
   "open_positions": [
-    {
-      "symbol": "HPQ",
-      "entry_date": "2026-09-25",
-      "entry_price": 31.14,
-      "stop_price": 28.710219794286687,
-      "target_price": 35.99956041142663,
-      "allocated_capital": 1000.0,
-      "days_held": 19
-    },
     {
       "symbol": "HASI",
       "entry_date": "2026-10-08",
@@ -22,7 +13,7 @@
       "stop_price": 34.9812012487294,
       "target_price": 39.087597502541215,
       "allocated_capital": 1000.0,
-      "days_held": 12
+      "days_held": 13
     },
     {
       "symbol": "FDX",
@@ -31,7 +22,7 @@
       "stop_price": 282.4848164003375,
       "target_price": 310.2203671993251,
       "allocated_capital": 1000.0,
-      "days_held": 11
+      "days_held": 12
     },
     {
       "symbol": "SIRI",
@@ -40,7 +31,7 @@
       "stop_price": 25.507186902110803,
       "target_price": 28.815626195778393,
       "allocated_capital": 1000.0,
-      "days_held": 10
+      "days_held": 11
     },
     {
       "symbol": "VOYA",
@@ -49,16 +40,7 @@
       "stop_price": 91.70885648718077,
       "target_price": 101.94228702563848,
       "allocated_capital": 1000.0,
-      "days_held": 8
-    },
-    {
-      "symbol": "EPD",
-      "entry_date": "2026-10-15",
-      "entry_price": 35.79,
-      "stop_price": 34.86097824716799,
-      "target_price": 37.648043505664006,
-      "allocated_capital": 1000.0,
-      "days_held": 8
+      "days_held": 9
     },
     {
       "symbol": "ESAB",
@@ -67,7 +49,7 @@
       "stop_price": 62.431081313574104,
       "target_price": 75.8078373728518,
       "allocated_capital": 1000.0,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "symbol": "BNY",
@@ -76,7 +58,25 @@
       "stop_price": 140.5005384481988,
       "target_price": 154.95892310360242,
       "allocated_capital": 1000.0,
-      "days_held": 3
+      "days_held": 4
+    },
+    {
+      "symbol": "FAF",
+      "entry_date": "2026-10-29",
+      "entry_price": 63.55,
+      "stop_price": 60.66831268088897,
+      "target_price": 69.31337463822206,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    },
+    {
+      "symbol": "DOLE",
+      "entry_date": "2026-10-29",
+      "entry_price": 13.14,
+      "stop_price": 12.75263279232173,
+      "target_price": 13.914734415356543,
+      "allocated_capital": 1000.0,
+      "days_held": 0
     }
   ],
   "closed_trades": [
@@ -233,7 +233,35 @@
       "exit_reason": "take_profit",
       "pnl_pct": 0.061900919131796794,
       "proceeds": 1061.9009191317966
+    },
+    {
+      "symbol": "HPQ",
+      "entry_date": "2026-09-25",
+      "entry_price": 31.14,
+      "stop_price": 28.710219794286687,
+      "target_price": 35.99956041142663,
+      "allocated_capital": 1000.0,
+      "days_held": 20,
+      "exit_date": "2026-10-29",
+      "exit_price": 32.45,
+      "exit_reason": "max_holding_days",
+      "pnl_pct": 0.0405680796403341,
+      "proceeds": 1040.568079640334
+    },
+    {
+      "symbol": "EPD",
+      "entry_date": "2026-10-15",
+      "entry_price": 35.79,
+      "stop_price": 34.86097824716799,
+      "target_price": 37.648043505664006,
+      "allocated_capital": 1000.0,
+      "days_held": 9,
+      "exit_date": "2026-10-29",
+      "exit_price": 37.648043505664006,
+      "exit_reason": "take_profit",
+      "pnl_pct": 0.05041515802358215,
+      "proceeds": 1050.415158023582
     }
   ],
-  "last_run_date": "2026-10-28"
+  "last_run_date": "2026-10-29"
 }
