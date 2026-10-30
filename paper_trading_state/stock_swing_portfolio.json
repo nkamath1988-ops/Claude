@@ -4,7 +4,7 @@
   "max_concurrent": 8,
   "max_holding_days": 20,
   "cost_rate": 0.00075,
-  "cash": 1836.682009670917,
+  "cash": 1898.5637914531303,
   "open_positions": [
     {
       "symbol": "HASI",
@@ -13,16 +13,7 @@
       "stop_price": 34.9812012487294,
       "target_price": 39.087597502541215,
       "allocated_capital": 1000.0,
-      "days_held": 13
-    },
-    {
-      "symbol": "FDX",
-      "entry_date": "2026-10-09",
-      "entry_price": 291.73,
-      "stop_price": 282.4848164003375,
-      "target_price": 310.2203671993251,
-      "allocated_capital": 1000.0,
-      "days_held": 12
+      "days_held": 14
     },
     {
       "symbol": "SIRI",
@@ -31,7 +22,7 @@
       "stop_price": 25.507186902110803,
       "target_price": 28.815626195778393,
       "allocated_capital": 1000.0,
-      "days_held": 11
+      "days_held": 12
     },
     {
       "symbol": "VOYA",
@@ -40,7 +31,7 @@
       "stop_price": 91.70885648718077,
       "target_price": 101.94228702563848,
       "allocated_capital": 1000.0,
-      "days_held": 9
+      "days_held": 10
     },
     {
       "symbol": "ESAB",
@@ -49,7 +40,7 @@
       "stop_price": 62.431081313574104,
       "target_price": 75.8078373728518,
       "allocated_capital": 1000.0,
-      "days_held": 4
+      "days_held": 5
     },
     {
       "symbol": "BNY",
@@ -58,7 +49,7 @@
       "stop_price": 140.5005384481988,
       "target_price": 154.95892310360242,
       "allocated_capital": 1000.0,
-      "days_held": 4
+      "days_held": 5
     },
     {
       "symbol": "FAF",
@@ -67,7 +58,7 @@
       "stop_price": 60.66831268088897,
       "target_price": 69.31337463822206,
       "allocated_capital": 1000.0,
-      "days_held": 0
+      "days_held": 1
     },
     {
       "symbol": "DOLE",
@@ -75,6 +66,15 @@
       "entry_price": 13.14,
       "stop_price": 12.75263279232173,
       "target_price": 13.914734415356543,
+      "allocated_capital": 1000.0,
+      "days_held": 1
+    },
+    {
+      "symbol": "WSO",
+      "entry_date": "2026-10-30",
+      "entry_price": 303.0,
+      "stop_price": 283.9030209315604,
+      "target_price": 341.1939581368793,
       "allocated_capital": 1000.0,
       "days_held": 0
     }
@@ -261,7 +261,21 @@
       "exit_reason": "take_profit",
       "pnl_pct": 0.05041515802358215,
       "proceeds": 1050.415158023582
+    },
+    {
+      "symbol": "FDX",
+      "entry_date": "2026-10-09",
+      "entry_price": 291.73,
+      "stop_price": 282.4848164003375,
+      "target_price": 310.2203671993251,
+      "allocated_capital": 1000.0,
+      "days_held": 13,
+      "exit_date": "2026-10-30",
+      "exit_price": 310.2203671993251,
+      "exit_reason": "take_profit",
+      "pnl_pct": 0.06188178178221332,
+      "proceeds": 1061.8817817822132
     }
   ],
-  "last_run_date": "2026-10-29"
+  "last_run_date": "2026-10-30"
 }
