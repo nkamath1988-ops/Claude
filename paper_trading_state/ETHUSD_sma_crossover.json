@@ -4,14 +4,14 @@
   "slippage_bps": 10.0,
   "train_days": 365,
   "test_days": 90,
-  "position": 1,
+  "position": 0,
   "current_params": {
     "fast": 10,
     "slow": 100
   },
-  "last_close": 2240.68,
-  "last_date": "2026-10-31",
-  "equity": 8319.428509900463,
+  "last_close": 2264.59,
+  "last_date": "2026-11-01",
+  "equity": 8395.724888705725,
   "trade_log": [
     {
       "date": "2026-09-25",
@@ -21,6 +21,16 @@
         "fast": 10,
         "slow": 100
       }
+    },
+    {
+      "date": "2026-11-01",
+      "action": "SELL (paper)",
+      "price": 2264.59,
+      "params": {
+        "fast": 10,
+        "slow": 100
+      },
+      "equity_after": 8395.724888705725
     }
   ],
   "daily_log": [
@@ -394,6 +404,16 @@
         "slow": 100
       },
       "equity": 8319.428509900463
+    },
+    {
+      "date": "2026-11-01",
+      "close": 2264.59,
+      "position": 0,
+      "params": {
+        "fast": 10,
+        "slow": 100
+      },
+      "equity": 8395.724888705725
     }
   ]
 }
