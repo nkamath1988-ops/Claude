@@ -1,31 +1,33 @@
-=== Session 2026-10-30 ===
-SPY (session 20 of 21; official variant today: nostop)
-  stop3             : 6 trades, 6 winners, net +52.3 bp
-  nostop  (official): 6 trades, 6 winners, net +52.3 bp
-     short 09:32->10:10 760.7->759.387 tp        +17.0bp
-     long  10:40->10:41 759.38->760.031 tp        +8.3bp
-     short 11:07->11:20 759.0->758.415 tp        +7.4bp
-     long  12:30->12:40 757.56->757.93 tp        +4.6bp
-     short 12:48->12:50 756.32->755.833 tp        +6.2bp
-     long  15:09->15:37 753.13->753.807 tp        +8.7bp
-QQQ (session 20 of 21; official variant today: nostop)
-  stop3             : 8 trades, 5 winners, net +51.4 bp
-  nostop  (official): 8 trades, 5 winners, net +38.8 bp
-     short 09:32->10:23 695.91->693.39 tp        +35.9bp
-     long  10:39->10:41 696.88->697.928 tp        +14.8bp
-     short 11:06->11:10 695.39->696.15 hull_flip -11.2bp
-     short 11:14->11:31 695.1->694.283 tp        +11.5bp
-     short 12:33->12:35 692.15->692.37 hull_flip -3.5bp
-     long  12:42->12:47 692.68->690.61 hull_flip -30.2bp
-     short 12:48->12:50 690.74->690.007 tp        +10.3bp
-     long  14:58->15:07 685.65->686.434 tp        +11.2bp
+=== Session 2026-11-02 ===
+SPY (session 21 of 21; official variant today: nostop)
+  stop3             : 6 trades, 5 winners, net +37.7 bp
+  nostop  (official): 6 trades, 5 winners, net +37.7 bp
+     long  09:31->10:08 759.43->760.775 tp        +17.4bp
+     short 10:53->10:56 761.82->761.32 tp        +6.3bp
+     long  13:07->13:30 759.105->758.532 hull_flip -7.8bp
+     short 13:30->13:31 758.532->758.092 tp        +5.5bp
+     long  14:59->15:03 754.86->755.478 tp        +7.9bp
+     short 15:29->15:31 754.04->753.395 tp        +8.3bp
+QQQ (session 21 of 21; official variant today: nostop)
+  stop3             : 8 trades, 6 winners, net +52.3 bp
+  nostop  (official): 8 trades, 6 winners, net +52.3 bp
+     long  09:31->10:17 695.33->696.953 tp        +23.1bp
+     short 10:49->10:52 696.9->696.158 tp        +10.4bp
+     short 12:10->12:23 693.4->692.737 tp        +9.3bp
+     long  13:08->13:25 692.1->691.42 hull_flip -10.1bp
+     short 13:29->13:32 690.85->690.219 tp        +8.8bp
+     long  15:00->15:03 685.62->686.549 tp        +13.3bp
+     long  15:17->15:29 684.96->683.97 hull_flip -14.8bp
+     short 15:30->15:30 684.15->683.288 tp        +12.3bp
 
 === CUMULATIVE (net of $0.01/share/side) ===
-SPY: 20 of 21 sessions
-  OFFICIAL (stop3 to session 15, nostop after): 219 trades | win 61% avg win +5.5bp avg loss -7.4bp | expectancy +0.44bp (95% CI -0.51 to +1.39, t=0.91) | PF 1.15 | maxDD -1.4%
-  stop3 all sessions: 219 trades | win 60% avg win +5.5bp avg loss -7.4bp | expectancy +0.39bp (95% CI -0.57 to +1.35, t=0.79) | PF 1.13 | maxDD -1.4%
-  nostop all sessions: 221 trades | win 63% avg win +5.4bp avg loss -7.6bp | expectancy +0.59bp (95% CI -0.38 to +1.56, t=1.20) | PF 1.21 | maxDD -1.0%
-QQQ: 20 of 21 sessions
-  OFFICIAL (stop3 to session 15, nostop after): 246 trades | win 57% avg win +8.2bp avg loss -11.7bp | expectancy -0.43bp (95% CI -1.94 to +1.07, t=-0.56) | PF 0.91 | maxDD -2.3%
-  stop3 all sessions: 246 trades | win 56% avg win +8.2bp avg loss -11.4bp | expectancy -0.38bp (95% CI -1.85 to +1.09, t=-0.51) | PF 0.92 | maxDD -2.3%
-  nostop all sessions: 248 trades | win 58% avg win +8.3bp avg loss -12.2bp | expectancy -0.25bp (95% CI -1.82 to +1.32, t=-0.31) | PF 0.95 | maxDD -1.9%
+SPY: 21 of 21 sessions
+  OFFICIAL (stop3 to session 15, nostop after): 225 trades | win 61% avg win +5.6bp avg loss -7.4bp | expectancy +0.60bp (95% CI -0.35 to +1.55, t=1.24) | PF 1.21 | maxDD -1.4%
+  stop3 all sessions: 225 trades | win 61% avg win +5.6bp avg loss -7.4bp | expectancy +0.55bp (95% CI -0.41 to +1.50, t=1.12) | PF 1.19 | maxDD -1.4%
+  nostop all sessions: 227 trades | win 63% avg win +5.6bp avg loss -7.6bp | expectancy +0.74bp (95% CI -0.22 to +1.70, t=1.51) | PF 1.27 | maxDD -1.0%
+QQQ: 21 of 21 sessions
+  OFFICIAL (stop3 to session 15, nostop after): 254 trades | win 57% avg win +8.4bp avg loss -11.7bp | expectancy -0.21bp (95% CI -1.70 to +1.27, t=-0.28) | PF 0.96 | maxDD -2.3%
+  stop3 all sessions: 254 trades | win 57% avg win +8.4bp avg loss -11.4bp | expectancy -0.17bp (95% CI -1.62 to +1.29, t=-0.22) | PF 0.97 | maxDD -2.3%
+  nostop all sessions: 256 trades | win 59% avg win +8.5bp avg loss -12.2bp | expectancy -0.04bp (95% CI -1.59 to +1.51, t=-0.05) | PF 0.99 | maxDD -1.9%
+
+TEST COMPLETE: 21 sessions logged for every symbol. Write the final verdict against README.md.

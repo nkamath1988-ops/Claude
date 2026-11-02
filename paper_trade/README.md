@@ -28,3 +28,17 @@ The paper trade is a **simulation** on that day's 1-minute bars. It is not a bro
 ## Note on the stop-loss switch
 In the 16-day backtest the two versions were nearly identical (SPY -0.96 vs -0.89 bp per trade, QQQ -1.46 vs -1.57 bp), but
 without a stop the worst QQQ trade was -59 bp against -46 bp with it. The paper test will show whether that difference matters.
+
+## Final result (21 sessions, 2026-10-05 to 2026-11-02, net of $0.01/share/side)
+Criteria per symbol: >= 21 sessions and about 250 trades, average net trade > 0 with the lower 95% CI bound > 0, profit factor >= 1.2.
+
+| Symbol | Version | Trades | Win % | Expectancy bp (95% CI) | PF | Verdict |
+|---|---|---|---|---|---|---|
+| SPY | official (stop to s15, none after) | 225 | 61% | +0.60 (-0.35 to +1.55) | 1.21 | not a pass: CI includes 0, trades below 250 |
+| SPY | 3 ATR stop all sessions | 225 | 61% | +0.55 (-0.41 to +1.50) | 1.19 | fail: CI includes 0, PF < 1.2 |
+| SPY | no stop all sessions | 227 | 63% | +0.74 (-0.22 to +1.70) | 1.27 | not a pass: CI includes 0, trades below 250 |
+| QQQ | official | 254 | 57% | -0.21 (-1.70 to +1.27) | 0.96 | fail |
+| QQQ | 3 ATR stop all sessions | 254 | 57% | -0.17 (-1.62 to +1.29) | 0.97 | fail |
+| QQQ | no stop all sessions | 256 | 59% | -0.04 (-1.59 to +1.51) | 0.99 | fail |
+
+No version passed. SPY is inconclusive and leans slightly positive; QQQ shows no edge. Each extra $0.01/share/side of real slippage costs about 0.26 bp per SPY trade.
