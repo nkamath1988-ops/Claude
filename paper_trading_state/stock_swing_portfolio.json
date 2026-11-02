@@ -4,7 +4,7 @@
   "max_concurrent": 8,
   "max_holding_days": 20,
   "cost_rate": 0.00075,
-  "cash": 1898.5637914531303,
+  "cash": 1979.9509089194362,
   "open_positions": [
     {
       "symbol": "HASI",
@@ -13,16 +13,7 @@
       "stop_price": 34.9812012487294,
       "target_price": 39.087597502541215,
       "allocated_capital": 1000.0,
-      "days_held": 14
-    },
-    {
-      "symbol": "SIRI",
-      "entry_date": "2026-10-13",
-      "entry_price": 26.61,
-      "stop_price": 25.507186902110803,
-      "target_price": 28.815626195778393,
-      "allocated_capital": 1000.0,
-      "days_held": 12
+      "days_held": 15
     },
     {
       "symbol": "VOYA",
@@ -31,7 +22,7 @@
       "stop_price": 91.70885648718077,
       "target_price": 101.94228702563848,
       "allocated_capital": 1000.0,
-      "days_held": 10
+      "days_held": 11
     },
     {
       "symbol": "ESAB",
@@ -40,7 +31,7 @@
       "stop_price": 62.431081313574104,
       "target_price": 75.8078373728518,
       "allocated_capital": 1000.0,
-      "days_held": 5
+      "days_held": 6
     },
     {
       "symbol": "BNY",
@@ -49,7 +40,7 @@
       "stop_price": 140.5005384481988,
       "target_price": 154.95892310360242,
       "allocated_capital": 1000.0,
-      "days_held": 5
+      "days_held": 6
     },
     {
       "symbol": "FAF",
@@ -58,7 +49,7 @@
       "stop_price": 60.66831268088897,
       "target_price": 69.31337463822206,
       "allocated_capital": 1000.0,
-      "days_held": 1
+      "days_held": 2
     },
     {
       "symbol": "DOLE",
@@ -67,7 +58,7 @@
       "stop_price": 12.75263279232173,
       "target_price": 13.914734415356543,
       "allocated_capital": 1000.0,
-      "days_held": 1
+      "days_held": 2
     },
     {
       "symbol": "WSO",
@@ -75,6 +66,15 @@
       "entry_price": 303.0,
       "stop_price": 283.9030209315604,
       "target_price": 341.1939581368793,
+      "allocated_capital": 1000.0,
+      "days_held": 1
+    },
+    {
+      "symbol": "RBLX",
+      "entry_date": "2026-11-02",
+      "entry_price": 42.99,
+      "stop_price": 38.29100375123311,
+      "target_price": 52.38799249753379,
       "allocated_capital": 1000.0,
       "days_held": 0
     }
@@ -275,7 +275,21 @@
       "exit_reason": "take_profit",
       "pnl_pct": 0.06188178178221332,
       "proceeds": 1061.8817817822132
+    },
+    {
+      "symbol": "SIRI",
+      "entry_date": "2026-10-13",
+      "entry_price": 26.61,
+      "stop_price": 25.507186902110803,
+      "target_price": 28.815626195778393,
+      "allocated_capital": 1000.0,
+      "days_held": 13,
+      "exit_date": "2026-11-02",
+      "exit_price": 28.815626195778393,
+      "exit_reason": "take_profit",
+      "pnl_pct": 0.08138711746630573,
+      "proceeds": 1081.3871174663057
     }
   ],
-  "last_run_date": "2026-10-30"
+  "last_run_date": "2026-11-02"
 }
