@@ -4,35 +4,8 @@
   "max_concurrent": 8,
   "max_holding_days": 20,
   "cost_rate": 0.00075,
-  "cash": 2255.806967990814,
+  "cash": 2446.7253832741635,
   "open_positions": [
-    {
-      "symbol": "BNY",
-      "entry_date": "2026-10-23",
-      "entry_price": 145.32,
-      "stop_price": 140.5005384481988,
-      "target_price": 154.95892310360242,
-      "allocated_capital": 1000.0,
-      "days_held": 8
-    },
-    {
-      "symbol": "FAF",
-      "entry_date": "2026-10-29",
-      "entry_price": 63.55,
-      "stop_price": 60.66831268088897,
-      "target_price": 69.31337463822206,
-      "allocated_capital": 1000.0,
-      "days_held": 4
-    },
-    {
-      "symbol": "DOLE",
-      "entry_date": "2026-10-29",
-      "entry_price": 13.14,
-      "stop_price": 12.75263279232173,
-      "target_price": 13.914734415356543,
-      "allocated_capital": 1000.0,
-      "days_held": 4
-    },
     {
       "symbol": "WSO",
       "entry_date": "2026-10-30",
@@ -40,7 +13,7 @@
       "stop_price": 283.9030209315604,
       "target_price": 341.1939581368793,
       "allocated_capital": 1000.0,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "symbol": "RBLX",
@@ -49,7 +22,7 @@
       "stop_price": 38.29100375123311,
       "target_price": 52.38799249753379,
       "allocated_capital": 1000.0,
-      "days_held": 2
+      "days_held": 3
     },
     {
       "symbol": "EZPW",
@@ -58,23 +31,50 @@
       "stop_price": 26.751534851276755,
       "target_price": 32.71693029744648,
       "allocated_capital": 1000.0,
-      "days_held": 1
+      "days_held": 2
     },
     {
-      "symbol": "VMRK",
-      "entry_date": "2026-11-04",
-      "entry_price": 62.04,
-      "stop_price": 60.294453358799466,
-      "target_price": 65.53109328240106,
+      "symbol": "AES",
+      "entry_date": "2026-11-05",
+      "entry_price": 14.89,
+      "stop_price": 14.812577063604762,
+      "target_price": 15.044845872790479,
       "allocated_capital": 1000.0,
       "days_held": 0
     },
     {
-      "symbol": "EXTR",
-      "entry_date": "2026-11-04",
-      "entry_price": 22.81,
-      "stop_price": 21.125878760232926,
-      "target_price": 26.17824247953414,
+      "symbol": "GGG",
+      "entry_date": "2026-11-05",
+      "entry_price": 67.97,
+      "stop_price": 64.7748320532198,
+      "target_price": 74.36033589356042,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    },
+    {
+      "symbol": "CZR",
+      "entry_date": "2026-11-05",
+      "entry_price": 29.18,
+      "stop_price": 28.808600991771257,
+      "target_price": 29.922798016457484,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    },
+    {
+      "symbol": "DEA",
+      "entry_date": "2026-11-05",
+      "entry_price": 22.52,
+      "stop_price": 21.735218778016424,
+      "target_price": 24.08956244396715,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    },
+    {
+      "symbol": "WAFD",
+      "entry_date": "2026-11-05",
+      "entry_price": 29.49,
+      "stop_price": 28.26737468832167,
+      "target_price": 31.93525062335665,
       "allocated_capital": 1000.0,
       "days_held": 0
     }
@@ -331,7 +331,77 @@
       "exit_reason": "take_profit",
       "pnl_pct": 0.07022295022748609,
       "proceeds": 1070.222950227486
+    },
+    {
+      "symbol": "BNY",
+      "entry_date": "2026-10-23",
+      "entry_price": 145.32,
+      "stop_price": 140.5005384481988,
+      "target_price": 154.95892310360242,
+      "allocated_capital": 1000.0,
+      "days_held": 9,
+      "exit_date": "2026-11-05",
+      "exit_price": 154.95892310360242,
+      "exit_reason": "take_profit",
+      "pnl_pct": 0.06482895061658694,
+      "proceeds": 1064.8289506165868
+    },
+    {
+      "symbol": "FAF",
+      "entry_date": "2026-10-29",
+      "entry_price": 63.55,
+      "stop_price": 60.66831268088897,
+      "target_price": 69.31337463822206,
+      "allocated_capital": 1000.0,
+      "days_held": 5,
+      "exit_date": "2026-11-05",
+      "exit_price": 69.31337463822206,
+      "exit_reason": "take_profit",
+      "pnl_pct": 0.08919039556604341,
+      "proceeds": 1089.1903955660434
+    },
+    {
+      "symbol": "DOLE",
+      "entry_date": "2026-10-29",
+      "entry_price": 13.14,
+      "stop_price": 12.75263279232173,
+      "target_price": 13.914734415356543,
+      "allocated_capital": 1000.0,
+      "days_held": 5,
+      "exit_date": "2026-11-05",
+      "exit_price": 13.914734415356543,
+      "exit_reason": "take_profit",
+      "pnl_pct": 0.0574600011686866,
+      "proceeds": 1057.4600011686866
+    },
+    {
+      "symbol": "VMRK",
+      "entry_date": "2026-11-04",
+      "entry_price": 62.04,
+      "stop_price": 60.294453358799466,
+      "target_price": 65.53109328240106,
+      "allocated_capital": 1000.0,
+      "days_held": 1,
+      "exit_date": "2026-11-05",
+      "exit_price": 65.53109328240106,
+      "exit_reason": "take_profit",
+      "pnl_pct": 0.05477165187622607,
+      "proceeds": 1054.771651876226
+    },
+    {
+      "symbol": "EXTR",
+      "entry_date": "2026-11-04",
+      "entry_price": 22.81,
+      "stop_price": 21.125878760232926,
+      "target_price": 26.17824247953414,
+      "allocated_capital": 1000.0,
+      "days_held": 1,
+      "exit_date": "2026-11-05",
+      "exit_price": 21.125878760232926,
+      "exit_reason": "stop_loss",
+      "pnl_pct": -0.07533258394419434,
+      "proceeds": 924.6674160558057
     }
   ],
-  "last_run_date": "2026-11-04"
+  "last_run_date": "2026-11-05"
 }
