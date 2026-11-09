@@ -13,7 +13,7 @@
       "stop_price": 283.9030209315604,
       "target_price": 341.1939581368793,
       "allocated_capital": 1000.0,
-      "days_held": 4
+      "days_held": 5
     },
     {
       "symbol": "RBLX",
@@ -22,7 +22,7 @@
       "stop_price": 38.29100375123311,
       "target_price": 52.38799249753379,
       "allocated_capital": 1000.0,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "symbol": "EZPW",
@@ -31,7 +31,7 @@
       "stop_price": 26.751534851276755,
       "target_price": 32.71693029744648,
       "allocated_capital": 1000.0,
-      "days_held": 2
+      "days_held": 3
     },
     {
       "symbol": "AES",
@@ -40,7 +40,7 @@
       "stop_price": 14.812577063604762,
       "target_price": 15.044845872790479,
       "allocated_capital": 1000.0,
-      "days_held": 0
+      "days_held": 1
     },
     {
       "symbol": "GGG",
@@ -49,7 +49,7 @@
       "stop_price": 64.7748320532198,
       "target_price": 74.36033589356042,
       "allocated_capital": 1000.0,
-      "days_held": 0
+      "days_held": 1
     },
     {
       "symbol": "CZR",
@@ -58,7 +58,7 @@
       "stop_price": 28.808600991771257,
       "target_price": 29.922798016457484,
       "allocated_capital": 1000.0,
-      "days_held": 0
+      "days_held": 1
     },
     {
       "symbol": "DEA",
@@ -67,7 +67,7 @@
       "stop_price": 21.735218778016424,
       "target_price": 24.08956244396715,
       "allocated_capital": 1000.0,
-      "days_held": 0
+      "days_held": 1
     },
     {
       "symbol": "WAFD",
@@ -76,7 +76,7 @@
       "stop_price": 28.26737468832167,
       "target_price": 31.93525062335665,
       "allocated_capital": 1000.0,
-      "days_held": 0
+      "days_held": 1
     }
   ],
   "closed_trades": [
@@ -403,5 +403,5 @@
       "proceeds": 924.6674160558057
     }
   ],
-  "last_run_date": "2026-11-05"
+  "last_run_date": "2026-11-06"
 }
