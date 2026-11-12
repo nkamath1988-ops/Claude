@@ -9,8 +9,8 @@
     "fast": 10,
     "slow": 100
   },
-  "last_close": 2052.65,
-  "last_date": "2026-11-11",
+  "last_close": 2046.69,
+  "last_date": "2026-11-12",
   "equity": 8395.724888705725,
   "trade_log": [
     {
@@ -508,6 +508,16 @@
     {
       "date": "2026-11-11",
       "close": 2052.65,
+      "position": 0,
+      "params": {
+        "fast": 10,
+        "slow": 100
+      },
+      "equity": 8395.724888705725
+    },
+    {
+      "date": "2026-11-12",
+      "close": 2046.69,
       "position": 0,
       "params": {
         "fast": 10,
