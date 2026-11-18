@@ -4,7 +4,7 @@
   "max_concurrent": 8,
   "max_holding_days": 20,
   "cost_rate": 0.00075,
-  "cash": 2593.1461170010666,
+  "cash": 2513.8389480367678,
   "open_positions": [
     {
       "symbol": "WSO",
@@ -13,7 +13,7 @@
       "stop_price": 283.9030209315604,
       "target_price": 341.1939581368793,
       "allocated_capital": 1000.0,
-      "days_held": 11
+      "days_held": 12
     },
     {
       "symbol": "AES",
@@ -22,7 +22,7 @@
       "stop_price": 14.812577063604762,
       "target_price": 15.044845872790479,
       "allocated_capital": 1000.0,
-      "days_held": 7
+      "days_held": 8
     },
     {
       "symbol": "GGG",
@@ -31,7 +31,7 @@
       "stop_price": 64.7748320532198,
       "target_price": 74.36033589356042,
       "allocated_capital": 1000.0,
-      "days_held": 7
+      "days_held": 8
     },
     {
       "symbol": "CZR",
@@ -40,25 +40,7 @@
       "stop_price": 28.808600991771257,
       "target_price": 29.922798016457484,
       "allocated_capital": 1000.0,
-      "days_held": 7
-    },
-    {
-      "symbol": "DEA",
-      "entry_date": "2026-11-05",
-      "entry_price": 22.52,
-      "stop_price": 21.735218778016424,
-      "target_price": 24.08956244396715,
-      "allocated_capital": 1000.0,
-      "days_held": 7
-    },
-    {
-      "symbol": "WAFD",
-      "entry_date": "2026-11-05",
-      "entry_price": 29.49,
-      "stop_price": 28.26737468832167,
-      "target_price": 31.93525062335665,
-      "allocated_capital": 1000.0,
-      "days_held": 7
+      "days_held": 8
     },
     {
       "symbol": "CHRW",
@@ -67,7 +49,7 @@
       "stop_price": 120.35428360610857,
       "target_price": 146.2614327877829,
       "allocated_capital": 1000.0,
-      "days_held": 5
+      "days_held": 6
     },
     {
       "symbol": "T",
@@ -76,7 +58,25 @@
       "stop_price": 21.280865950156986,
       "target_price": 23.97826809968603,
       "allocated_capital": 1000.0,
-      "days_held": 2
+      "days_held": 3
+    },
+    {
+      "symbol": "UBER",
+      "entry_date": "2026-11-17",
+      "entry_price": 68.81,
+      "stop_price": 65.69299527810774,
+      "target_price": 75.0440094437845,
+      "allocated_capital": 1000.0,
+      "days_held": 0
+    },
+    {
+      "symbol": "SPNT",
+      "entry_date": "2026-11-17",
+      "entry_price": 25.92,
+      "stop_price": 24.85713958681175,
+      "target_price": 28.045720826376503,
+      "allocated_capital": 1000.0,
+      "days_held": 0
     }
   ],
   "closed_trades": [
@@ -429,7 +429,35 @@
       "exit_reason": "stop_loss",
       "pnl_pct": -0.07068807058883936,
       "proceeds": 929.3119294111607
+    },
+    {
+      "symbol": "DEA",
+      "entry_date": "2026-11-05",
+      "entry_price": 22.52,
+      "stop_price": 21.735218778016424,
+      "target_price": 24.08956244396715,
+      "allocated_capital": 1000.0,
+      "days_held": 8,
+      "exit_date": "2026-11-17",
+      "exit_price": 21.735218778016424,
+      "exit_reason": "stop_loss",
+      "pnl_pct": -0.03634818925326716,
+      "proceeds": 963.6518107467328
+    },
+    {
+      "symbol": "WAFD",
+      "entry_date": "2026-11-05",
+      "entry_price": 29.49,
+      "stop_price": 28.26737468832167,
+      "target_price": 31.93525062335665,
+      "allocated_capital": 1000.0,
+      "days_held": 8,
+      "exit_date": "2026-11-17",
+      "exit_price": 28.26737468832167,
+      "exit_reason": "stop_loss",
+      "pnl_pct": -0.04295897971103185,
+      "proceeds": 957.0410202889681
     }
   ],
-  "last_run_date": "2026-11-16"
+  "last_run_date": "2026-11-17"
 }
