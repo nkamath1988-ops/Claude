@@ -1,6 +1,6 @@
 {
   "bar_minutes": 5,
-  "last_bar_ts": "2026-11-18T20:55:00Z",
+  "last_bar_ts": "2026-11-19T16:55:00Z",
   "notify": [
     "gap15"
   ],
@@ -10,17 +10,21 @@
   },
   "reported": [
     "exit:gap15:2026-10-15T14:45:00Z",
+    "exit:gap15:2026-11-19T16:40:00Z",
     "exit:spec9:2026-10-15T14:45:00Z",
     "exit:spec9:2026-10-23T14:50:00Z",
     "exit:spec9:2026-11-06T18:35:00Z",
     "exit:spec9:2026-11-12T16:35:00Z",
+    "exit:spec9:2026-11-19T16:40:00Z",
     "sig:gap15:2026-10-15T14:40:00Z",
+    "sig:gap15:2026-11-19T16:35:00Z",
     "sig:spec9:2026-10-15T14:40:00Z",
     "sig:spec9:2026-10-23T14:45:00Z",
     "sig:spec9:2026-11-06T18:30:00Z",
-    "sig:spec9:2026-11-12T16:30:00Z"
+    "sig:spec9:2026-11-12T16:30:00Z",
+    "sig:spec9:2026-11-19T16:35:00Z"
   ],
-  "runs": 41,
+  "runs": 42,
   "start_ts": "2026-09-29T23:42:20Z",
   "trades": {
     "gap15": [
@@ -40,6 +44,24 @@
         "stop": 7690.04,
         "swept": 7696.6,
         "target": 7789.15,
+        "variant": "gap15"
+      },
+      {
+        "entry": 7325.01,
+        "entry_time": "2026-11-19T16:40:00Z",
+        "exit": 7305.28,
+        "exit_reason": "stop",
+        "exit_time": "2026-11-19T16:50:00Z",
+        "gap": 15.81,
+        "pts": -20.23,
+        "r": -1.025,
+        "risk": 19.73,
+        "side": "long",
+        "signal_time": "2026-11-19T16:35:00Z",
+        "status": "closed",
+        "stop": 7305.28,
+        "swept": 7285.76,
+        "target": 7415.64,
         "variant": "gap15"
       }
     ],
@@ -114,6 +136,24 @@
         "stop": 7642.1,
         "swept": 7647.2,
         "target": 7550.84,
+        "variant": "spec9"
+      },
+      {
+        "entry": 7325.01,
+        "entry_time": "2026-11-19T16:40:00Z",
+        "exit": 7305.28,
+        "exit_reason": "stop",
+        "exit_time": "2026-11-19T16:50:00Z",
+        "gap": 15.81,
+        "pts": -20.23,
+        "r": -1.025,
+        "risk": 19.73,
+        "side": "long",
+        "signal_time": "2026-11-19T16:35:00Z",
+        "status": "closed",
+        "stop": 7305.28,
+        "swept": 7285.76,
+        "target": 7415.64,
         "variant": "spec9"
       }
     ]
